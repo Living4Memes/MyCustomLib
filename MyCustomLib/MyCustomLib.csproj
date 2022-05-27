@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{646E5606-0B66-4BB4-91E2-749AE395E874}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyCustomLib</RootNamespace>
+    <AssemblyName>MyCustomLib</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Fizzler, Version=1.2.1.0, Culture=neutral, PublicKeyToken=4ebff4844e382110, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fizzler.1.2.1\lib\netstandard2.0\Fizzler.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Svg, Version=3.4.0.0, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.3.4.2\lib\net461\Svg.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Api\ImgBBApi\ImgBBClient.cs" />
+    <Compile Include="Api\ImgBBApi\ResponseParser.cs" />
+    <Compile Include="Api\ImgBBApi\~ImgBBApi_General.cs" />
+    <Compile Include="Api\PasteBinApi\PasteBinClient.cs" />
+    <Compile Include="Api\PasteBinApi\PasteBinRequestParameters.cs" />
+    <Compile Include="Api\PasteBinApi\PastesListParser.cs" />
+    <Compile Include="Api\PasteBinApi\~PasteBinApi_General.cs" />
+    <Compile Include="Controls\CustomButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomSlider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Poster.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\[MAIN_PARENT]CustomControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\[TEST]TestControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\~Controls_general.cs" />
+    <Compile Include="DebugExtensions\~DebugExtensions_General.cs" />
+    <Compile Include="GraphicFunctions\CustomGraphics.cs" />
+    <Compile Include="GraphicFunctions\~GraphicFunctions_General.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="~MyCustomLib_General.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\Comfortaa.ttf" />
+    <None Include="Resources\Font Awesome 6 Free-Solid-900.otf" />
+    <None Include="Resources\MinimizeBar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PosterBG.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PosterMenuButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShikiLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SliderBG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutMeMenuButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\angle-left.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\angle-right.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CharacterManagementButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CloseBar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CodeButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DFX.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MaximizeBarCompress.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MaximizeBarEnlarge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MenuImage.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
