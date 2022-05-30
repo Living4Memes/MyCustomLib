@@ -23,7 +23,7 @@ namespace MyCustomLib.Controls
             public event EmptyEventHandler ShadowPropertiesChanged;
 
             #region === Свойства и поля ===
-            protected EnhancedImage _enhancedImage;
+            protected EnhancedImage _enhancedImage = null;
             protected PictureBox _mainPictureBox = new PictureBox();
             protected PictureBoxShadowStyle _shadowStyle = PictureBoxShadowStyle.None;
             protected ShadowProperties _imageShadowProperties = new ShadowProperties()
@@ -40,7 +40,7 @@ namespace MyCustomLib.Controls
             };
 
             [Category("Custom settings"), Description("Sets image of the PictureBox.")]
-            public Image Image { get => _enhancedImage.PlainImage; set { SetImage(value); ImageChanged?.Invoke(); } }
+            public Image Image { get => _enhancedImage != null ? _enhancedImage.PlainImage : null; set { SetImage(value); ImageChanged?.Invoke(); } }
             [Category("Custom settings"), Description("Properties of a shadow drawn on an image.")]
             public ShadowProperties ImageShadowProperties { get => _imageShadowProperties; set { _imageShadowProperties = value; ShadowPropertiesChanged?.Invoke(); } }
             [Category("Custom settings"), Description("Sets hover style of the picturebox.")]
@@ -61,7 +61,6 @@ namespace MyCustomLib.Controls
             }
 
             #region === Обработка событий ===
-
             protected override void OnPaint(PaintEventArgs e)
             {
                   DrawBody(e.Graphics, ClientRectangle);
@@ -80,18 +79,34 @@ namespace MyCustomLib.Controls
                   base.OnSizeChanged(e);
             }
 
-            protected virtual void OnImageChanged() => Invalidate();
-            protected virtual void OnHoverStyleChanged()
+            protected override void OnDrawBorderChanged()
             {
+                  _enhancedImage.DrawBorder = true;
                   UpdateImage();
             }
+            protected override void OnBorderWidthChanged()
+            {
+                  if (_enhancedImage == null || !_drawBorder)
+                        return;
+
+                  _enhancedImage.SetBorderWidth(BorderWidth);
+
+                  UpdateImage();
+            }
+            protected override void OnBorderColorChanged() 
+            { 
+                  if (_drawBorder) UpdateImage(); 
+            }
+
+            protected virtual void OnImageChanged() => UpdateImage();
+            protected virtual void OnHoverStyleChanged() => UpdateImage();
             #endregion
 
             protected override void DrawBody(Graphics g, Rectangle client)
             {
                   Rectangle borderRectangle = client; borderRectangle.Inflate(-1, -1);
-                  GraphicsPath body = GetGPath(client);
-                  GraphicsPath border = GetGPath(borderRectangle);
+                  GraphicsPath body = GetGPath(client, _style);
+                  GraphicsPath border = GetGPath(borderRectangle, _style);
 
                   Region = new Region(body);
 
@@ -116,10 +131,14 @@ namespace MyCustomLib.Controls
                   EnhancedImageProperties imageProperties = new EnhancedImageProperties()
                   {
                         PlainImage = image,
-                        ImagePath = GetGPath(ClientRectangle)
+                        ContainerProperties = new CustomContainerProperties()
+                        {
+                              ClientRectangle = this.ClientRectangle,
+                              ContainerStyle = _style,
+                              RoundedRadius = _roundedRadius
+                        },
+                        ShadowProperties = _imageShadowProperties
                   };
-
-                  imageProperties.ShadowProperties = _imageShadowProperties;
 
                   if (_drawBorder)
                         imageProperties.BorderProperties = new BorderProperties()
@@ -153,6 +172,9 @@ namespace MyCustomLib.Controls
 
             private void UpdateImage()
             {
+                  if (_enhancedImage == null)
+                        return;
+
                   _mainPictureBox.Image = GetCorrectImage();
 
                   Invalidate();
@@ -178,8 +200,8 @@ namespace MyCustomLib.Controls
                         if(HoverShadowStyle != PictureBoxShadowStyle.Always && HoverShadowStyle != PictureBoxShadowStyle.None)
                               switch(HoverShadowStyle)
                               {
-                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
-                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
+                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _drawBorder ? _enhancedImage.ShadowedImageWithBorder :  _enhancedImage.ShadowedImage; break; }
+                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _drawBorder ? _enhancedImage.ImageWithBorder : _enhancedImage.PlainImage; break; }
                               }
                   };
                   _mainPictureBox.MouseEnter += (s, e) =>
@@ -187,8 +209,8 @@ namespace MyCustomLib.Controls
                         if(HoverShadowStyle != PictureBoxShadowStyle.Always && HoverShadowStyle != PictureBoxShadowStyle.None)
                               switch (HoverShadowStyle)
                               {
-                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
-                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
+                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _drawBorder ? _enhancedImage.ImageWithBorder : _enhancedImage.PlainImage; break; }
+                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _drawBorder ? _enhancedImage.ShadowedImageWithBorder : _enhancedImage.ShadowedImage; break; }
                               }
                   };
             }

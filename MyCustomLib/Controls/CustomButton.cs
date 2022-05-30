@@ -66,14 +66,14 @@ namespace MyCustomLib.Controls
 
             protected override void OnSizeChanged(EventArgs e)
             {
-                  if (_style == CustomControlStyle.Rounded)
+                  if (_style == CustomContainerStyle.Rounded)
                   {
                         double correctRadius = FixRadius(_roundedRadius);
 
                         if (correctRadius < _roundedRadius)
                               Radius = correctRadius;
                   }
-                  else if (_style == CustomControlStyle.Pill)
+                  else if (_style == CustomContainerStyle.Pill)
                   {
                         Radius = Height * 0.5;
                         int minWidth = (int)Radius * 2 + 1;
@@ -88,8 +88,8 @@ namespace MyCustomLib.Controls
             protected override void DrawBody(Graphics g, Rectangle client)
             {
                   Rectangle rect = ClientRectangle;
-                  GraphicsPath body = GetGPath(rect); rect.Inflate(-1, -1); // Уменьшение размера для рамки
-                  GraphicsPath border = GetGPath(rect);
+                  GraphicsPath body = GetGPath(rect, _style); rect.Inflate(-1, -1); // Уменьшение размера для рамки
+                  GraphicsPath border = GetGPath(rect, _style);
 
                   Region = new Region(body);
 

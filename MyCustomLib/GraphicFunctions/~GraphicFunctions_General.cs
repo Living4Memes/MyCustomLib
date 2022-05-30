@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using MyCustomLib.Controls;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace MyCustomLib.GraphicFunctions
@@ -29,7 +30,7 @@ namespace MyCustomLib.GraphicFunctions
       public struct EnhancedImageProperties : IEnhancedPlainImageWithBorder, IEnhancedImageWithShadow, IEnhancedImageWithShadowAndBorder, IEnhancedPlainImage
       {
             public Image PlainImage { get; set; }
-            public GraphicsPath ImagePath { get; set; }
+            public CustomContainerProperties ContainerProperties { get; set; }
             public ShadowProperties ShadowProperties { get; set; }
             public BorderProperties BorderProperties { get; set; }
       }
@@ -52,7 +53,7 @@ namespace MyCustomLib.GraphicFunctions
       public interface IEnhancedPlainImage
       {
             Image PlainImage { get; set; }
-            GraphicsPath ImagePath { get; set; }
+            CustomContainerProperties ContainerProperties { get; set; }
       }
 
       #endregion

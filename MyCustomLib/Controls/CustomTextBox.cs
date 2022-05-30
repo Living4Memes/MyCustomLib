@@ -35,7 +35,7 @@ namespace MyCustomLib.Controls
             // Горизонтальный отступ
             private int _horizontalIndent = 15;
 
-            public override CustomControlStyle Style { get => CustomControlStyle.Pill; }
+            public override CustomContainerStyle Style { get => CustomContainerStyle.Pill; }
 
             [Description("Vertical indent between text and top/bottom borders."), Category("Custom settings")]
             public int VerticalIndent { get => _verticalIndent; set { _verticalIndent = value; VerticalIndentChanged?.Invoke(); } }
@@ -50,7 +50,7 @@ namespace MyCustomLib.Controls
                   Size = new Size(300, 40);
                   _stringFormat.Alignment = StringAlignment.Near;
 
-                  _style = CustomControlStyle.Pill;
+                  _style = CustomContainerStyle.Pill;
                   BackColor = Colors.TextBoxColor;
                   ForeColor = Colors.TextBoxFontColor;
 

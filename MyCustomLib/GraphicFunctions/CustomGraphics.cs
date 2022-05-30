@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyCustomLib.Controls;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -72,6 +73,20 @@ namespace MyCustomLib.GraphicFunctions
                   return body;
             }
 
+            public static GraphicsPath GetContainerGraphicsPath(ISquareContainer squareContainer)
+            {
+                  return GetRectanglePath(squareContainer.ClientRectangle);
+            }
+
+            public static GraphicsPath GetContainerGraphicsPath(IRoundedContainer roundedContainer)
+            {
+                  return GetRoundedRectanglePath(roundedContainer.ClientRectangle, roundedContainer.RoundedRadius);
+            }
+
+            public static GraphicsPath GetContainerGraphicsPath(IPillContainer pillContainer)
+            {
+                  return GetPillRectanglePath(pillContainer.ClientRectangle);
+            }
 
             public static void DrawBorder (Graphics g, GraphicsPath path, BorderProperties borderProperties)
             {

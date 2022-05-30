@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using MyCustomLib.GraphicFunctions;
+using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace MyCustomLib.Controls
 {
@@ -28,10 +31,56 @@ namespace MyCustomLib.Controls
             public static Color ListBoxChoosenItemColor = Color.LightGray;
       }
 
-      public enum CustomControlStyle
+      public enum CustomContainerStyle
       {
             Pill,
             Rounded,
             Square
       }
+
+      public struct CustomContainerProperties : ISquareContainer, IRoundedContainer, IPillContainer
+      {
+            private double _roundedRadius;
+
+            public Rectangle ClientRectangle { get; set; }
+            public CustomContainerStyle ContainerStyle { get; set; }
+            public GraphicsPath ClientPath { get => GetGPath(); }
+            public double RoundedRadius { get => _roundedRadius; set => _roundedRadius = FixRadius(value); }
+
+            private double FixRadius(double radius)
+            {
+                  if (ClientRectangle.Width >= ClientRectangle.Height)
+                        return radius <= ClientRectangle.Height * 0.5 ? radius : ClientRectangle.Height * 0.5;
+                  else
+                        return radius <= ClientRectangle.Width * 0.5 ? radius : ClientRectangle.Width * 0.5;
+            }
+
+            private GraphicsPath GetGPath()
+            {
+                  switch (ContainerStyle)
+                  {
+                        case CustomContainerStyle.Square: return CustomGraphics.GetContainerGraphicsPath(this as ISquareContainer);
+                        case CustomContainerStyle.Rounded: return CustomGraphics.GetContainerGraphicsPath(this as IRoundedContainer);
+                        case CustomContainerStyle.Pill: return CustomGraphics.GetContainerGraphicsPath(this as IPillContainer);
+                        default: throw new ArgumentException("Unknown container style! Function: GetGPath.", nameof(ContainerStyle));
+                  }
+            }
+      }
+      
+      public interface ISquareContainer
+      {
+            Rectangle ClientRectangle { get; set; }
+      }
+
+      public interface IRoundedContainer : ISquareContainer
+      {
+            double RoundedRadius { get; set; }
+      }
+
+      public interface IPillContainer : ISquareContainer 
+      {
+            
+      }
+
+
 }

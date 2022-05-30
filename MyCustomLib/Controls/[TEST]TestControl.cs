@@ -7,9 +7,9 @@ namespace MyCustomLib.Controls
       public class TestControl : CustomPictureBox
       {
             
-            public TestControl()
+            public TestControl() : base()
             {
-                  BackgroundImage = Properties.Resources.DFX;
+                  Image = Properties.Resources.DFX;
 
                   _mainPictureBox.MouseDown += (s, e) =>
                   {

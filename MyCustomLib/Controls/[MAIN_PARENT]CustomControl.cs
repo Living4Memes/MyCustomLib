@@ -168,7 +168,7 @@ namespace MyCustomLib.Controls
             #region === Свойства и поля ===
 
             // Стиль контрола
-            protected CustomControlStyle _style = CustomControlStyle.Rounded;
+            protected CustomContainerStyle _style = CustomContainerStyle.Rounded;
             // Радиус закругления у кнопки стиля RoundedButton
             protected double _roundedRadius = 20;
 
@@ -183,7 +183,7 @@ namespace MyCustomLib.Controls
             protected float _borderWidth = 1f;
 
             [Description("Sets style of the control."), Category("Custom settings")]
-            public virtual CustomControlStyle Style { get => _style; set { _style = value; CustomStyleChanged?.Invoke(); } }
+            public virtual CustomContainerStyle Style { get => _style; set { _style = value; CustomStyleChanged?.Invoke(); } }
             [Description("Sets turning radius for RoundedControl style."), Category("Custom settings")]
             public virtual double Radius { get => _roundedRadius; set { _roundedRadius = value; RadiusChanged?.Invoke(); } }
             [Description("Sets color of the border."), Category("Custom settings")]
@@ -225,14 +225,21 @@ namespace MyCustomLib.Controls
 
             #endregion
 
-            protected virtual GraphicsPath GetGPath(Rectangle rect)
+            protected virtual GraphicsPath GetGPath(Rectangle rect, CustomContainerStyle containerStyle)
             {
-                  switch (_style)
+                  CustomContainerProperties properties = new CustomContainerProperties()
                   {
-                        case CustomControlStyle.Rounded: return GetRoundedRectanglePath(rect, FixRadius(_roundedRadius));
-                        case CustomControlStyle.Pill: return GetPillRectanglePath(rect);
-                        case CustomControlStyle.Square: return GetRectanglePath(rect);
-                        default: return null;
+                        ClientRectangle = ClientRectangle,
+                        ContainerStyle = _style,
+                        RoundedRadius = _roundedRadius
+                  };
+
+                  switch(containerStyle)
+                  {
+                        case CustomContainerStyle.Square: return CustomGraphics.GetContainerGraphicsPath(properties as ISquareContainer);
+                        case CustomContainerStyle.Rounded: return CustomGraphics.GetContainerGraphicsPath(properties as IRoundedContainer);
+                        case CustomContainerStyle.Pill: return CustomGraphics.GetContainerGraphicsPath(properties as IPillContainer);
+                        default: throw new ArgumentException("Unknown container style! Function: GetGPath.", nameof(containerStyle));
                   }
             }
 
@@ -247,8 +254,8 @@ namespace MyCustomLib.Controls
             protected virtual void DrawBody(Graphics g, Rectangle client)
             {
                   Rectangle borderRectangle = client; borderRectangle.Inflate(-1, -1);
-                  GraphicsPath body = GetGPath(client);
-                  GraphicsPath border = GetGPath(borderRectangle);
+                  GraphicsPath body = GetGPath(client, _style);
+                  GraphicsPath border = GetGPath(borderRectangle, _style);
 
                   Region = new Region(body);
 
