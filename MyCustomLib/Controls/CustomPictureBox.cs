@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 
 namespace MyCustomLib.Controls
 {
-      public enum ShadowStyle
+      public enum PictureBoxShadowStyle
       {
             None,
             ShadowOnHover,
@@ -20,16 +20,31 @@ namespace MyCustomLib.Controls
       {
             public event EmptyEventHandler ImageChanged;
             public event EmptyEventHandler HoverStyleChanged;
+            public event EmptyEventHandler ShadowPropertiesChanged;
 
             #region === Свойства и поля ===
             protected EnhancedImage _enhancedImage;
             protected PictureBox _mainPictureBox = new PictureBox();
-            protected ShadowStyle _shadowStyle = ShadowStyle.None;
+            protected PictureBoxShadowStyle _shadowStyle = PictureBoxShadowStyle.None;
+            protected ShadowProperties _imageShadowProperties = new ShadowProperties()
+            {
+                  ShadowStyle = ShadowStyle.Full,
+                  InitialColor = Color.Black,
+                  FiniteColor = Color.Transparent,
+                  Range = 0.15,
+                  GradientBlend = new Blend(2)
+                  {
+                        Factors = new float[] { 0.0f, 1.0f },
+                        Positions = new float[] { 0.0f, 1.0f }
+                  }
+            };
 
             [Category("Custom settings"), Description("Sets image of the PictureBox.")]
             public Image Image { get => _enhancedImage.PlainImage; set { SetImage(value); ImageChanged?.Invoke(); } }
+            [Category("Custom settings"), Description("Properties of a shadow drawn on an image.")]
+            public ShadowProperties ImageShadowProperties { get => _imageShadowProperties; set { _imageShadowProperties = value; ShadowPropertiesChanged?.Invoke(); } }
             [Category("Custom settings"), Description("Sets hover style of the picturebox.")]
-            public ShadowStyle HoverShadowStyle { get => _shadowStyle; set { _shadowStyle = value; HoverStyleChanged?.Invoke(); } }
+            public PictureBoxShadowStyle HoverShadowStyle { get => _shadowStyle; set { _shadowStyle = value; HoverStyleChanged?.Invoke(); } }
             #endregion
 
             public CustomPictureBox() : base()
@@ -98,22 +113,40 @@ namespace MyCustomLib.Controls
                   if (image == null)
                         return;
 
-                  _enhancedImage = new EnhancedImage(image);
+                  EnhancedImageProperties imageProperties = new EnhancedImageProperties()
+                  {
+                        PlainImage = image,
+                        ImagePath = GetGPath(ClientRectangle)
+                  };
+
+                  imageProperties.ShadowProperties = _imageShadowProperties;
+
+                  if (_drawBorder)
+                        imageProperties.BorderProperties = new BorderProperties()
+                        {
+                              BorderColor = this.BorderColor,
+                              BorderWidth = this.BorderWidth
+                        };
+
+                  if (_drawBorder)
+                        _enhancedImage = new EnhancedImage(imageProperties as IEnhancedImageWithShadowAndBorder);
+                  else
+                        _enhancedImage = new EnhancedImage(imageProperties as IEnhancedImageWithShadow);
 
                   _mainPictureBox.Image = _enhancedImage.PlainImage;
             }
 
             private Image GetCorrectImage()
             {
-                  if (HoverShadowStyle == ShadowStyle.ShadowWithoutHover || HoverShadowStyle == ShadowStyle.Always)
+                  if (HoverShadowStyle == PictureBoxShadowStyle.ShadowWithoutHover || HoverShadowStyle == PictureBoxShadowStyle.Always)
                   {
                         if (_drawBorder)
-                              return _enhancedImage.GetShadowedImageWithBorder(GetGPath(ClientRectangle), _borderColor, _borderWidth);
+                              return _enhancedImage.ShadowedImageWithBorder;
                         else
                               return _enhancedImage.ShadowedImage;
                   }
                   else if (_drawBorder)
-                        return _enhancedImage.GetImageWithBorder(GetGPath(ClientRectangle), _borderColor, _borderWidth);
+                        return _enhancedImage.ImageWithBorder;
                   else
                         return _enhancedImage.PlainImage;
             }
@@ -142,20 +175,20 @@ namespace MyCustomLib.Controls
             {
                   _mainPictureBox.MouseLeave += (s, e) =>
                   {
-                        if(HoverShadowStyle != ShadowStyle.Always && HoverShadowStyle != ShadowStyle.None)
+                        if(HoverShadowStyle != PictureBoxShadowStyle.Always && HoverShadowStyle != PictureBoxShadowStyle.None)
                               switch(HoverShadowStyle)
                               {
-                                    case ShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
-                                    case ShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
+                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
+                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
                               }
                   };
                   _mainPictureBox.MouseEnter += (s, e) =>
                   {
-                        if(HoverShadowStyle != ShadowStyle.Always && HoverShadowStyle != ShadowStyle.None)
+                        if(HoverShadowStyle != PictureBoxShadowStyle.Always && HoverShadowStyle != PictureBoxShadowStyle.None)
                               switch (HoverShadowStyle)
                               {
-                                    case ShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
-                                    case ShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
+                                    case PictureBoxShadowStyle.ShadowWithoutHover: { _mainPictureBox.Image = _enhancedImage.PlainImage; break; }
+                                    case PictureBoxShadowStyle.ShadowOnHover: { _mainPictureBox.Image = _enhancedImage.ShadowedImage; break; }
                               }
                   };
             }

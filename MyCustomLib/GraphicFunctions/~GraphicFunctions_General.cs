@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 
 namespace MyCustomLib.GraphicFunctions
 {
@@ -29,51 +24,50 @@ namespace MyCustomLib.GraphicFunctions
             }
       }
 
-      public struct EnhancedImage
+      #region === Настройки EnhancedImage ===
+
+      public struct EnhancedImageProperties : IEnhancedPlainImageWithBorder, IEnhancedImageWithShadow, IEnhancedImageWithShadowAndBorder, IEnhancedPlainImage
       {
-            public Image PlainImage { get; private set; }
-            public Image ShadowedImage { get; private set; }
-
-            public EnhancedImage(Image image)
-            {
-                  PlainImage = new Bitmap(image);
-                  ShadowedImage = new Bitmap(image);
-
-                  CustomGraphics.AddShadow(ShadowedImage, new ShadowStyle(ShadowType.Full));
-            }
-
-            public Image GetImageWithBorder(GraphicsPath path, Color color, float width)
-            {
-                  return AddBorder(PlainImage, path, color, width);
-            }
-
-            public Image GetShadowedImageWithBorder(GraphicsPath path, Color color, float width)
-            {
-                  return AddBorder(ShadowedImage, path, color, width);
-            }
-
-            private Image AddBorder(Image image, GraphicsPath path, Color color, float width)
-            {
-                  Image resultImage = new Bitmap(image);
-
-                  using (Graphics g = Graphics.FromImage(resultImage))
-                        g.DrawPath(new Pen(color, width), path);
-
-                  return resultImage;
-            }
+            public Image PlainImage { get; set; }
+            public GraphicsPath ImagePath { get; set; }
+            public ShadowProperties ShadowProperties { get; set; }
+            public BorderProperties BorderProperties { get; set; }
       }
 
-      public struct ShadowStyle
+      public interface IEnhancedImageWithShadowAndBorder : IEnhancedImageWithShadow
       {
-            public ShadowType ShadowType { get; set; }
+            BorderProperties BorderProperties { get; set; }
+      }
+
+      public interface IEnhancedPlainImageWithBorder : IEnhancedPlainImage
+      {
+            BorderProperties BorderProperties { get; set; }
+      }
+
+      public interface IEnhancedImageWithShadow : IEnhancedPlainImage
+      {
+            ShadowProperties ShadowProperties { get; set; }
+      }
+
+      public interface IEnhancedPlainImage
+      {
+            Image PlainImage { get; set; }
+            GraphicsPath ImagePath { get; set; }
+      }
+
+      #endregion
+
+      public struct ShadowProperties
+      {
+            public ShadowStyle ShadowStyle { get; set; }
             public Color InitialColor { get; set; }
             public Color FiniteColor { get; set; }
             public double Range { get; set; }
             public Blend GradientBlend { get; set; }
 
-            public ShadowStyle(ShadowType shadowType)
+            public ShadowProperties(ShadowStyle shadowType)
             {
-                  ShadowType = shadowType;
+                  ShadowStyle = shadowType;
                   InitialColor = Color.Black;
                   FiniteColor = Color.Transparent;
                   Range = 0.15;
@@ -84,9 +78,9 @@ namespace MyCustomLib.GraphicFunctions
                   };
             }
 
-            public ShadowStyle(ShadowType shadowType, Color initialColor, Color finiteColor, double range, Blend gradientBlend)
+            public ShadowProperties(ShadowStyle shadowType, Color initialColor, Color finiteColor, double range, Blend gradientBlend)
             {
-                  ShadowType = shadowType;
+                  ShadowStyle = shadowType;
                   InitialColor = initialColor;
                   FiniteColor = finiteColor;
                   Range = range;
@@ -94,7 +88,13 @@ namespace MyCustomLib.GraphicFunctions
             }
       }
 
-      public enum ShadowType
+      public struct BorderProperties
+      {
+            public Color BorderColor { get; set; }
+            public float BorderWidth { get; set; }
+      }
+
+      public enum ShadowStyle
       { 
             Full,
             Vertical,

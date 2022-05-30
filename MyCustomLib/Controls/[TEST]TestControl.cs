@@ -9,7 +9,6 @@ namespace MyCustomLib.Controls
             
             public TestControl()
             {
-                  _enhancedImage = new EnhancedImage(Properties.Resources.DFX);
                   BackgroundImage = Properties.Resources.DFX;
 
                   _mainPictureBox.MouseDown += (s, e) =>

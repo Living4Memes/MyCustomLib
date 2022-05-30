@@ -179,7 +179,7 @@ namespace MyCustomLib.Controls
                   Bitmap bitmap = new Bitmap(BackgroundImage, new Size(Width, Height - interval));
 
                   if (BlackoutAlpha > 0)
-                        CustomGraphics.AddBlackout(bitmap, BlackoutColor, BlackoutAlpha);
+                        CustomGraphics.DrawBlackout(bitmap, BlackoutColor, BlackoutAlpha);
 
                   g.DrawImage(bitmap, 0, interval);
             }
