@@ -74,7 +74,7 @@
     <Compile Include="Api\ImgBBApi\ResponseParser.cs" />
     <Compile Include="Api\ImgBBApi\~ImgBBApi_General.cs" />
     <Compile Include="Api\PasteBinApi\PasteBinClient.cs" />
-    <Compile Include="Api\PasteBinApi\PasteBinRequestParameters.cs" />
+    <Compile Include="Api\PasteBinApi\PasteBinRequestBuilder.cs" />
     <Compile Include="Api\PasteBinApi\PastesListParser.cs" />
     <Compile Include="Api\PasteBinApi\~PasteBinApi_General.cs" />
     <Compile Include="Controls\CustomButton.cs">

@@ -1,34 +1,29 @@
 ﻿using MyCustomLib.Controls;
-using MyCustomLib.Animation;
-using MyCustomLib.GraphicFunctions;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+using MyCustomLib.Api.PasteBinApi;
 
 namespace Debug
 {
       public partial class DebugForm : CustomForm
       {
-            private MovementAnimator animator;
             public DebugForm()
             {
                   InitializeComponent();
 
-                  animator = new MovementAnimator(ref customButton1, new MovementAnimationSettings()
+                  PasteBinClient client = new PasteBinClient(PasteBinLoginType.User);
+                  PasteBinRequestParameters requestParameters = new PasteBinRequestParameters()
                   {
-                        AnimationPath = new AnimationPath(CustomGraphics.GetRectanglePath(new Rectangle(50, 50, 100, 100))),
-                        Delay = 1000,
-                        Cyclic = false
-                  });
-            }
+                        ApiDevKey = "xrY0PFPfWPpPCxI2omEgMneDgF_sh-_7",
+                        ApiUserName = "living4memes",
+                        ApiUserPassword = "DsnfCj9gFvdddddddfgg",
+                        ApiResultsLimit = 5,
+                        ApiUserKey = "user_key",
+                        ExpireDate = "N",
+                        Format = "csharp",
+                        TextPrivacy = PasteBinTextPrivacy.Private
+                  };
 
-            private void customButton1_Click(object sender, System.EventArgs e)
-            {
-                  if (animator.AnimationState == AnimationState.Stopped)
-                        animator.Start();
-                  else
-                        animator.Stop();
-
+                  label1.Text = client.CreatePaste(requestParameters, "test_api", "Hello world!");
+                  //client.DeleteAllPastes(requestParameters);
             }
       }
 }

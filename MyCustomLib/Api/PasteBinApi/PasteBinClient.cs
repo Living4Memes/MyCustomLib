@@ -24,7 +24,7 @@ namespace MyCustomLib.Api.PasteBinApi
                   if (String.IsNullOrEmpty(pasteText))
                         throw new ArgumentNullException(nameof(pasteText), "Text was empty.");
 
-                  NameValueCollection parameters = options.AssemblePostParameteres(pasteText);
+                  NameValueCollection parameters = PasteBinRequestBuilder.BuildPost(options, pasteText);
 
                   string userKey = Login(options);
                   if (userKey.LastIndexOf('.') == userKey.Length - 1)
@@ -51,7 +51,7 @@ namespace MyCustomLib.Api.PasteBinApi
                   NameValueCollection parameters = new NameValueCollection();
 
                   if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = options.AssembleListingParameteres();
+                        parameters = PasteBinRequestBuilder.BuildListing(options);
                   else
                         throw new Exception("Wrong input parameters!");
 
@@ -69,7 +69,7 @@ namespace MyCustomLib.Api.PasteBinApi
                   NameValueCollection parameters = new NameValueCollection();
 
                   if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = options.AssembleRawPasteParameters(pasteKey);
+                        parameters = PasteBinRequestBuilder.BuildPost(options, pasteKey);
                   else
                         return "Wrong input parameteres!";
 
@@ -87,7 +87,7 @@ namespace MyCustomLib.Api.PasteBinApi
                   NameValueCollection parameters = new NameValueCollection();
 
                   if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = options.AssembleDeletePostParameters(pasteKey);
+                        parameters = PasteBinRequestBuilder.BuildDelete(options, pasteKey);
                   else
                         return "Wrong input parameteres!";
 
@@ -158,12 +158,5 @@ namespace MyCustomLib.Api.PasteBinApi
             {
                   return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
             }
-      }
-
-      internal static class DefaultClientOptions
-      {
-            public const string ApiKey = "api_key";
-            public const string Login = "login";
-            public const string Password = "password";
       }
 }
