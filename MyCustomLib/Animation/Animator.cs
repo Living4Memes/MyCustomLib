@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyCustomLib.Controls;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -9,17 +10,11 @@ using System.Windows.Forms;
 
 namespace MyCustomLib.Animation
 {
-      public interface IAnimatable
-      {
-            Point Location { get; set; }
-            Size Size { get; set; }
-      }
-
       public abstract class Animator
       {
-            private IAnimatable _mainObject;
+            protected CustomButton _mainObject;
 
-            public Animator(IAnimatable obj)
+            public Animator(ref CustomButton obj)
             {
                   _mainObject = obj;
             }

@@ -6,6 +6,8 @@ using MyCustomLib.GraphicFunctions;
 using System.Threading.Tasks;
 using System;
 
+using MyCustomLib;
+
 namespace MyCustomLib.Controls
 {
       public abstract class CustomControl : Control
@@ -155,8 +157,6 @@ namespace MyCustomLib.Controls
                   }
             }
             #endregion
-
-            public delegate void EmptyEventHandler();
 
             public event EmptyEventHandler CustomStyleChanged;
             public event EmptyEventHandler RadiusChanged;

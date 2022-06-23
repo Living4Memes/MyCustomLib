@@ -22,6 +22,8 @@ using System.ComponentModel;
 
 namespace MyCustomLib
 {
+      public delegate void EmptyEventHandler();
+
       public static class Extensions
       {
             #region === Конвертация типов ===

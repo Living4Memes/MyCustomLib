@@ -4,54 +4,77 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using MyCustomLib;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MyCustomLib.Controls;
 
 namespace MyCustomLib.Animation
 {
+      public struct MovementAnimationSettings
+      {
+            public AnimationPath AnimationPath;
+            public bool Cyclic;
+            public int Delay;
+      }
+
       public class MovementAnimator : Animator
       {
+            #region === События ===
+            public event EmptyEventHandler PathChanged;
+            public event EmptyEventHandler CyclicChanged;
+            public event EmptyEventHandler Tick;
+            #endregion
+
+            #region === Поля и свойства ===
             private AnimationState _animationState = AnimationState.Stopped;
-            private Point _startPoint;
-            private Point _endPoint;
-            private GraphicsPath _path;
-            private List<Point> _animationPoints;
+            private AnimationPath _path;
+            private bool _cyclic;
+            private int _delay;
 
-            public Point StartPoint { get => _startPoint; set => _startPoint = value; }
-            public Point EndPoint { get => _endPoint; set => _endPoint = value; }
-            public GraphicsPath Path { get => _path; set { _path = value; _animationPoints = ParseGraphicsPath(value); } }
+            public AnimationPath Path { get => _path; set { _path = value; PathChanged?.Invoke(); } }
             public AnimationState AnimationState => _animationState;
-
-            public MovementAnimator(IAnimatable obj, GraphicsPath animationPath) : base(obj)
+            public bool Cyclic { get => _cyclic; set { _cyclic = value; CyclicChanged?.Invoke(); } }
+            public int Delay { get => _delay; set => _delay = value; }
+            #endregion
+            public MovementAnimator(ref CustomButton obj, MovementAnimationSettings settings) : base(ref obj)
             {
-                  _startPoint = obj.Location;
-                  _path = animationPath;
+                  Path = settings.AnimationPath;
+                  Cyclic = settings.Cyclic;
+                  Delay = settings.Delay;
             }
 
             public void Start()
             {
                   _animationState = AnimationState.Running;
 
-            }
-
-            public void Pause()
-            {
-                  _animationState = AnimationState.Paused;
-
+                  PerformAnimation();
             }
 
             public void Stop()
             {
                   _animationState = AnimationState.Stopped;
-
             }
 
-            private List<Point> ParseGraphicsPath(GraphicsPath gp)
+            private void PerformAnimation()
             {
-                  List<Point> result = new List<Point>();
+                  Task timer = new Task(() => Task.Delay(Delay));
+                  do
+                  {
+                        foreach (Point point in Path)
+                        {
+                              if (_animationState == AnimationState.Stopped)
+                                    return;
 
-                  foreach (PointF point in gp.PathPoints)
-                        result.Add(new Point(point.X.ToInt(), point.Y.ToInt()));
+                              _mainObject.Location = point;
 
-                  return result.Distinct().ToList();
+                              Tick?.Invoke();
+
+                              timer.Start();
+                              timer.Wait();
+
+                              timer = new Task(async () => await Task.Delay(Delay));
+                        }
+                  } while (Cyclic);
             }
       }
 }

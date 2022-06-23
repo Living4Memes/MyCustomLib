@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation\AnimationPath.cs" />
     <Compile Include="Animation\Animator.cs" />
     <Compile Include="Animation\MovementAnimator.cs" />
     <Compile Include="Animation\~Animation_General.cs" />

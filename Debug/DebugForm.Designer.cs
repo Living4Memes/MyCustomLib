@@ -28,44 +28,43 @@
             /// </summary>
             private void InitializeComponent()
             {
-                  System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugForm));
-                  this.customPictureBox1 = new MyCustomLib.Controls.CustomPictureBox();
+                  this.customButton1 = new MyCustomLib.Controls.CustomButton();
                   this.SuspendLayout();
                   // 
-                  // customPictureBox1
+                  // customButton1
                   // 
-                  this.customPictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("customPictureBox1.BackgroundImage")));
-                  this.customPictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-                  this.customPictureBox1.BorderColor = System.Drawing.Color.Orange;
-                  this.customPictureBox1.BorderWidth = 1F;
-                  this.customPictureBox1.DrawBorder = false;
-                  this.customPictureBox1.HoverShadowStyle = MyCustomLib.Controls.PictureBoxShadowStyle.None;
-                  this.customPictureBox1.Image = global::Debug.Properties.Resources.DFX;
-                  this.customPictureBox1.Location = new System.Drawing.Point(292, 137);
-                  this.customPictureBox1.Name = "customPictureBox1";
-                  this.customPictureBox1.Radius = 20D;
-                  this.customPictureBox1.Size = new System.Drawing.Size(429, 200);
-                  this.customPictureBox1.Style = MyCustomLib.Controls.CustomContainerStyle.Rounded;
-                  this.customPictureBox1.TabIndex = 1;
-                  this.customPictureBox1.Text = "customPictureBox1";
+                  this.customButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(61)))), ((int)(((byte)(70)))));
+                  this.customButton1.BorderColor = System.Drawing.Color.Orange;
+                  this.customButton1.BorderWidth = 1F;
+                  this.customButton1.DrawBorder = false;
+                  this.customButton1.Hoverable = false;
+                  this.customButton1.Location = new System.Drawing.Point(195, 168);
+                  this.customButton1.MouseEnterColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(137)))), ((int)(((byte)(45)))));
+                  this.customButton1.Name = "customButton1";
+                  this.customButton1.Radius = 20D;
+                  this.customButton1.Size = new System.Drawing.Size(298, 74);
+                  this.customButton1.Style = MyCustomLib.Controls.CustomContainerStyle.Rounded;
+                  this.customButton1.TabIndex = 1;
+                  this.customButton1.Text = "customButton1";
+                  this.customButton1.Click += new System.EventHandler(this.customButton1_Click);
                   // 
                   // DebugForm
                   // 
                   this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
                   this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                   this.ClientSize = new System.Drawing.Size(800, 450);
-                  this.Controls.Add(this.customPictureBox1);
+                  this.Controls.Add(this.customButton1);
                   this.Name = "DebugForm";
                   this.Opacity = 1D;
                   this.Text = "Form1";
-                  this.Controls.SetChildIndex(this.customPictureBox1, 0);
+                  this.Controls.SetChildIndex(this.customButton1, 0);
                   this.ResumeLayout(false);
 
             }
 
             #endregion
 
-            private MyCustomLib.Controls.CustomPictureBox customPictureBox1;
+            private MyCustomLib.Controls.CustomButton customButton1;
       }
 }
 

@@ -15,7 +15,6 @@ namespace MyCustomLib.Animation
       public enum AnimationState
       {
             Stopped,
-            Running,
-            Paused
+            Running
       }
 }
