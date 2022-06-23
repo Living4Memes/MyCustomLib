@@ -35,9 +35,9 @@ namespace MyCustomLib
                   throw new ArgumentException("Input string was not correct int value!", nameof(str));
             }
 
-            public static int ToInt(this double dbl)
+            public static int ToInt(this float flt)
             {
-                  return Convert.ToInt32(dbl);
+                  return Convert.ToInt32(flt);
             }
 
             public static double ToDouble(this int number)

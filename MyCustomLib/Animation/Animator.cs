@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,13 @@ namespace MyCustomLib.Animation
             Size Size { get; set; }
       }
 
-      public class Animator
+      public abstract class Animator
       {
             private IAnimatable _mainObject;
 
             public Animator(IAnimatable obj)
             {
-
+                  _mainObject = obj;
             }
       }
 }

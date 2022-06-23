@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\Animator.cs" />
+    <Compile Include="Animation\MovementAnimator.cs" />
+    <Compile Include="Animation\~Animation_General.cs" />
     <Compile Include="Api\ImgBBApi\ImgBBClient.cs" />
     <Compile Include="Api\ImgBBApi\ResponseParser.cs" />
     <Compile Include="Api\ImgBBApi\~ImgBBApi_General.cs" />
