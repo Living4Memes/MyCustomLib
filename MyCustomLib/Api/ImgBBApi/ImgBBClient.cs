@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Drawing;
 using MyCustomLib;
+using System.Threading.Tasks;
 
 namespace MyCustomLib.Api.ImgBBApi
 {
@@ -13,7 +14,7 @@ namespace MyCustomLib.Api.ImgBBApi
 
             private string _apiKey;
 
-            public ImgBBClient(string apiKey = DefaultClientSettings.DevKey)
+            public ImgBBClient(string apiKey)
             {
                   _apiKey = apiKey;
             }
@@ -30,6 +31,20 @@ namespace MyCustomLib.Api.ImgBBApi
             }
 
             public ImgBBResponse UploadImage(Image image, string title) => UploadImage(image.ToBitmap(), title);
+
+            public ImgBBResponse UploadImageAsync(Bitmap bitmap, string title)
+            {
+                  Task<ImgBBResponse> sender = Task.Factory.StartNew(() => UploadImage(bitmap, title));
+                  sender.Start();
+                  return sender.Result;
+            }
+
+            public ImgBBResponse UploadImageAsync(Image image, string title)
+            {
+                  Task<ImgBBResponse> sender = Task.Factory.StartNew(() => UploadImage(image, title));
+                  sender.Start();
+                  return sender.Result;
+            }
 
             private string SendPostRequest(NameValueCollection parameters)
             {
@@ -58,10 +73,5 @@ namespace MyCustomLib.Api.ImgBBApi
             {
                   return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
             }
-      }
-
-      internal static class DefaultClientSettings
-      {
-            public const string DevKey = "dev_key";
       }
 }
