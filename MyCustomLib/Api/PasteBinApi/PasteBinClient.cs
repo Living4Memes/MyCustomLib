@@ -12,27 +12,29 @@ namespace MyCustomLib.Api.PasteBinApi
             private const string PASTE_URI = "https://pastebin.com/api/api_post.php";
             private const string LOGIN_URI = "https://pastebin.com/api/api_login.php";
 
-            private PasteBinLoginType _loginType;
+            private PasteBinRequestParameters _parameters;
 
-            public PasteBinClient(PasteBinLoginType loginType = PasteBinLoginType.Guest)
+            public PasteBinRequestParameters Parameters { get => _parameters; set => _parameters = value; }
+
+            public PasteBinClient(PasteBinRequestParameters parameters)
             {
-                  _loginType = loginType;
+                  Parameters = parameters;
             }
 
-            public string CreatePaste(PasteBinRequestParameters options, string pasteName, string pasteText)
+            public string CreatePaste(string pasteName, string pasteText)
             {
                   if (String.IsNullOrEmpty(pasteText))
                         throw new ArgumentNullException(nameof(pasteText), "Text was empty.");
 
-                  NameValueCollection parameters = PasteBinRequestBuilder.BuildPost(options, pasteText);
+                  NameValueCollection parameters = PasteBinRequestBuilder.BuildPost(Parameters, pasteText);
 
-                  string userKey = Login(options);
+                  string userKey = Login(Parameters);
                   if (userKey.LastIndexOf('.') == userKey.Length - 1)
                         return userKey;
                   else
-                        options.ApiUserKey = userKey;
+                        _parameters.ApiUserKey = userKey;
 
-                  parameters.Add("api_user_key", options.ApiUserKey);
+                  parameters.Add("api_user_key", Parameters.ApiUserKey);
                   parameters.Add("api_paste_name", pasteName);
 
                   string response = SendPostRequest(parameters);
@@ -40,63 +42,63 @@ namespace MyCustomLib.Api.PasteBinApi
                   return response;
             }
 
-            public List<PasteInfo> GetUserPastes(PasteBinRequestParameters options)
+            public List<PasteInfo> GetUserPastes()
             {
-                  string userKey = Login(options);
+                  string userKey = Login(Parameters);
                   if (userKey.LastIndexOf('.') == userKey.Length - 1)
                         throw new Exception("User key was not correct value!");
                   else
-                        options.ApiUserKey = userKey;
+                        _parameters.ApiUserKey = userKey;
 
                   NameValueCollection parameters = new NameValueCollection();
 
-                  if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = PasteBinRequestBuilder.BuildListing(options);
+                  if (!String.IsNullOrEmpty(Parameters.ApiDevKey) && !String.IsNullOrEmpty(Parameters.ApiUserKey) && Parameters.ApiResultsLimit > 0)
+                        parameters = PasteBinRequestBuilder.BuildListing(Parameters);
                   else
                         throw new Exception("Wrong input parameters!");
 
                   return SendPostRequest(parameters).ParsePasteBinResponse();
             }
 
-            public string GetPasteText(PasteBinRequestParameters options, string pasteKey)
+            public string GetPasteText(string pasteKey)
             {
-                  string userKey = Login(options);
+                  string userKey = Login(Parameters);
                   if (userKey.LastIndexOf('.') == userKey.Length - 1)
                         return userKey;
                   else
-                        options.ApiUserKey = userKey;
+                        _parameters.ApiUserKey = userKey;
 
                   NameValueCollection parameters = new NameValueCollection();
 
-                  if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = PasteBinRequestBuilder.BuildPost(options, pasteKey);
+                  if (!String.IsNullOrEmpty(Parameters.ApiDevKey) && !String.IsNullOrEmpty(Parameters.ApiUserKey) && Parameters.ApiResultsLimit > 0)
+                        parameters = PasteBinRequestBuilder.BuildPost(Parameters, pasteKey);
                   else
                         return "Wrong input parameteres!";
 
                   return SendPostRequest(parameters);
             }
 
-            public string DeletePaste(PasteBinRequestParameters options, string pasteKey)
+            public string DeletePaste(string pasteKey)
             {
-                  string userKey = Login(options);
+                  string userKey = Login(Parameters);
                   if (userKey.LastIndexOf('.') == userKey.Length - 1)
                         return userKey;
                   else
-                        options.ApiUserKey = userKey;
+                        _parameters.ApiUserKey = userKey;
 
                   NameValueCollection parameters = new NameValueCollection();
 
-                  if (!String.IsNullOrEmpty(options.ApiDevKey) && !String.IsNullOrEmpty(options.ApiUserKey) && options.ApiResultsLimit > 0)
-                        parameters = PasteBinRequestBuilder.BuildDelete(options, pasteKey);
+                  if (!String.IsNullOrEmpty(Parameters.ApiDevKey) && !String.IsNullOrEmpty(Parameters.ApiUserKey) && Parameters.ApiResultsLimit > 0)
+                        parameters = PasteBinRequestBuilder.BuildDelete(Parameters, pasteKey);
                   else
                         return "Wrong input parameteres!";
 
                   return SendPostRequest(parameters);
             }
 
-            public void DeleteAllPastes(PasteBinRequestParameters options)
+            public void DeleteAllPastes()
             {
-                  GetUserPastes(options).Select(x => x.Key).ToList().ForEach(x => DeletePaste(options, x));
+                  GetUserPastes().Select(x => x.Key).ToList().ForEach(x => DeletePaste(x));
             }
 
             private string SendPostRequest(NameValueCollection parameters)
@@ -124,7 +126,7 @@ namespace MyCustomLib.Api.PasteBinApi
 
             private string Login(PasteBinRequestParameters options)
             {
-                  if (_loginType == PasteBinLoginType.User && String.IsNullOrEmpty(options.ApiUserName) && String.IsNullOrEmpty(options.ApiUserPassword))
+                  if (Parameters.TextPrivacy == PasteBinTextPrivacy.Private && String.IsNullOrEmpty(options.ApiUserName) && String.IsNullOrEmpty(options.ApiUserPassword))
                         return "Login error. Uploading aborted.";
 
                   using (WebClient client = new WebClient())
