@@ -180,7 +180,7 @@ namespace MyCustomLib.Controls
             // Флаг рисования рамки
             protected bool _drawBorder = true;
             // Ширина границы кнопки
-            protected float _borderWidth = 1f;
+            protected float _borderWidth = 5f;
 
             [Description("Sets style of the control."), Category("Custom settings")]
             public virtual CustomContainerStyle Style { get => _style; set { _style = value; CustomStyleChanged?.Invoke(); } }
