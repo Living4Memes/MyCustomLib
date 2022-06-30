@@ -10,6 +10,7 @@ using MyCustomLib.Controls;
 
 namespace MyCustomLib.Animation
 {
+
       public struct MovementAnimationSettings
       {
             public AnimationPath AnimationPath;
