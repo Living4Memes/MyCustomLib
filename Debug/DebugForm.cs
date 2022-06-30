@@ -1,6 +1,7 @@
 ﻿using MyCustomLib.Controls;
-using MyCustomLib.Api.ImgBBApi;
+using MyCustomLib.Api.WinApi;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Debug
 {
@@ -9,6 +10,12 @@ namespace Debug
             public DebugForm()
             {
                   InitializeComponent();
+
+                  GlobalKeyboardHook gkh = new GlobalKeyboardHook();
+
+                  gkh.Filtered = false;
+
+                  gkh.KeyDown += (s, e) => richTextBox1.Text += e.KeyCode.ToString();
             }
 
       }

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace MyCustomLib.Api.WinApi
 {
-      class GlobalKeyboardHook
+      public class GlobalKeyboardHook
       {
             // Код хука взят с https://www.cyberforum.ru/windows-forms/thread782982.html
 
@@ -35,11 +35,11 @@ namespace MyCustomLib.Api.WinApi
             /// <summary>
             /// The collections of keys to watch for
             /// </summary>
-            public List<Keys> HookedKeys = new List<Keys>();
+            public List<Keys> KeyFilter = new List<Keys>();
             /// <summary>
-            /// Flag for key combination
+            /// Enables or disables the key filter
             /// </summary>
-            public bool Combination = false;
+            public bool Filtered = true;
             /// <summary>
             /// Handle to the hook, need this to unhook and call the next hook
             /// </summary>
@@ -59,7 +59,7 @@ namespace MyCustomLib.Api.WinApi
 
             #region Constructors and Destructors
             /// <summary>
-            /// Initializes a new instance of the <see cref="globalKeyboardHook"/> class and installs the keyboard hook.
+            /// Initializes a new instance of the <see cref="GlobalKeyboardHook"/> class and installs the keyboard hook.
             /// </summary>
             public GlobalKeyboardHook()
             {
@@ -85,7 +85,7 @@ namespace MyCustomLib.Api.WinApi
 
                   IntPtr hInstance = LoadLibrary("User32");
                   //hhook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
-                  delegateHookProc = hookProc;
+                  delegateHookProc = HookProc;
                   hhook = SetWindowsHookEx(WH_KEYBOARD_LL, delegateHookProc, hInstance, 0);
             }
             public delegate int KeyboardHookProc(int code, int wParam, ref KeyboardHookStruct lParam);
@@ -105,12 +105,12 @@ namespace MyCustomLib.Api.WinApi
             /// <param name="wParam">The event type</param>
             /// <param name="lParam">The keyhook event information</param>
             /// <returns></returns>
-            public int hookProc(int code, int wParam, ref KeyboardHookStruct lParam)
+            public int HookProc(int code, int wParam, ref KeyboardHookStruct lParam)
             {
                   if (code >= 0)
                   {
                         Keys key = (Keys)lParam.vkCode;
-                        if (HookedKeys.Contains(key))
+                        if (KeyFilter.Contains(key) || !Filtered)
                         {
                               KeyEventArgs kea = new KeyEventArgs(key);
                               if ((wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) && (KeyDown != null))
