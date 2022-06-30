@@ -77,6 +77,8 @@
     <Compile Include="Api\PasteBinApi\PasteBinRequestBuilder.cs" />
     <Compile Include="Api\PasteBinApi\PastesListParser.cs" />
     <Compile Include="Api\PasteBinApi\~PasteBinApi_General.cs" />
+    <Compile Include="Api\WinApi\GlobalKeyboardHook.cs" />
+    <Compile Include="Api\WinApi\~WinApi_General.cs" />
     <Compile Include="Controls\CustomButton.cs">
       <SubType>Component</SubType>
     </Compile>
