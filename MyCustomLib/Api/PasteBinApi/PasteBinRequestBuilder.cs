@@ -3,48 +3,74 @@ using System.Collections.Specialized;
 
 namespace MyCustomLib.Api.PasteBinApi
 {
-
+      /// <summary>
+      /// Содержит параметры запросов для pastebin.com
+      /// </summary>
       public struct PasteBinRequestParameters : IPasteBinPostParameters, IPasteBinDeleteParameters, IPasteBinListingParameters, IPasteBinRawPasteParameters
       {
+            /// <summary>
+            /// Api ключ pastebin.com
+            /// </summary>
             public string ApiDevKey { get; set; }
+            /// <summary>
+            /// Тип доступа к paste
+            /// </summary>
             public PasteBinTextPrivacy TextPrivacy { get; set; }
+            /// <summary>
+            /// Дата автоудаления paste
+            /// </summary>
             public string ExpireDate { get; set; }
+            /// <summary>
+            /// Стиль текста (для цветного форматирования синтаксиса на сайте)
+            /// </summary>
             public string Format { get; set; }
+            /// <summary>
+            /// Одноразовый ключ для публикации paste с доступом <see cref="PasteBinTextPrivacy.Private"/>
+            /// </summary>
             public string ApiUserKey { get; set; }
+            /// <summary>
+            /// Имя пользователя для авторизации
+            /// </summary>
             public string ApiUserName { get; set; }
+            /// <summary>
+            /// Пароль для авторизации
+            /// </summary>
             public string ApiUserPassword { get; set; }
+            /// <summary>
+            /// Ограничение по количеству результатов выполнения GET запроса
+            /// </summary>
             public int ApiResultsLimit { get; set; }
       }
 
-      public interface IPasteBinMainParameters
+      internal interface IPasteBinMainParameters
       {
             string ApiDevKey { get; set; }
       }
 
-      public interface IPasteBinPostParameters : IPasteBinMainParameters
+      internal interface IPasteBinPostParameters : IPasteBinMainParameters
       {
             PasteBinTextPrivacy TextPrivacy { get; set; }
             string ExpireDate { get; set; }
             string Format { get; set; }
       }
 
-      public interface IPasteBinListingParameters : IPasteBinMainParameters
+      internal interface IPasteBinListingParameters : IPasteBinMainParameters
       {
             int ApiResultsLimit { get; set; }
             string ApiUserKey { get; set; }
       }
 
-      public interface IPasteBinRawPasteParameters : IPasteBinMainParameters
+      internal interface IPasteBinRawPasteParameters : IPasteBinMainParameters
       {
             string ApiUserKey { get; set; }
       }
 
-      public interface IPasteBinDeleteParameters : IPasteBinMainParameters
+      internal interface IPasteBinDeleteParameters : IPasteBinMainParameters
       { 
             string ApiUserKey { get; set; }
       }
 
-      public static class PasteBinRequestBuilder
+      internal static class PasteBinRequestBuilder
       {
             public static NameValueCollection BuildPost(IPasteBinPostParameters postParameters, string pasteText)
             {

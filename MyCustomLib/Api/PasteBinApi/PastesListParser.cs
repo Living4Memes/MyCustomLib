@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MyCustomLib.Api.PasteBinApi
 {
-      public static class PastesListParser
+      internal static class PastesListParser
       {
             public static List<PasteInfo> Parse(string input)
             {

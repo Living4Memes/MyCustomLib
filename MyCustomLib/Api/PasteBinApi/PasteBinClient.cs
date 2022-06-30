@@ -7,20 +7,36 @@ using System.Text;
 
 namespace MyCustomLib.Api.PasteBinApi
 {
-      public class PasteBinClient
+      /// <summary>
+      /// Клиент для работы с сайтом pastebin.com
+      /// </summary>
+      public sealed class PasteBinClient
       {
             private const string PASTE_URI = "https://pastebin.com/api/api_post.php";
             private const string LOGIN_URI = "https://pastebin.com/api/api_login.php";
 
             private PasteBinRequestParameters _parameters;
 
+            /// <summary>
+            /// Параметры клиента
+            /// </summary>
             public PasteBinRequestParameters Parameters { get => _parameters; set => _parameters = value; }
 
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="PasteBinClient"/>
+            /// </summary>
+            /// <param name="parameters">Параметры клиента</param>
             public PasteBinClient(PasteBinRequestParameters parameters)
             {
                   Parameters = parameters;
             }
 
+            /// <summary>
+            /// Создание нового paste
+            /// </summary>
+            /// <param name="pasteName">Название paste</param>
+            /// <param name="pasteText">Основной текст для загрузки</param>
+            /// <returns>Информация о выполненном запросе</returns>
             public string CreatePaste(string pasteName, string pasteText)
             {
                   if (String.IsNullOrEmpty(pasteText))
@@ -42,6 +58,11 @@ namespace MyCustomLib.Api.PasteBinApi
                   return response;
             }
 
+            /// <summary>
+            /// Получение всех paste'ов пользователя
+            /// </summary>
+            /// <returns>Список с <see cref="PasteInfo"/> всех paste'ов</returns>
+            /// <remarks>Требуется логин и пароль в <see cref="Parameters"/></remarks>
             public List<PasteInfo> GetUserPastes()
             {
                   string userKey = Login(Parameters);
@@ -60,6 +81,11 @@ namespace MyCustomLib.Api.PasteBinApi
                   return SendPostRequest(parameters).ParsePasteBinResponse();
             }
 
+            /// <summary>
+            /// Получает текст paste по его ключу
+            /// </summary>
+            /// <param name="pasteKey">Ключ paste</param>
+            /// <returns>Текст найденного paste</returns>
             public string GetPasteText(string pasteKey)
             {
                   string userKey = Login(Parameters);
@@ -78,6 +104,12 @@ namespace MyCustomLib.Api.PasteBinApi
                   return SendPostRequest(parameters);
             }
 
+            /// <summary>
+            /// Удаляет paste по его ключу
+            /// </summary>
+            /// <param name="pasteKey">Ключ paste</param>
+            /// <returns>Информация о выполненном запросе</returns>
+            /// <remarks>Требуется логин и пароль в <see cref="Parameters"/></remarks>
             public string DeletePaste(string pasteKey)
             {
                   string userKey = Login(Parameters);
@@ -96,6 +128,10 @@ namespace MyCustomLib.Api.PasteBinApi
                   return SendPostRequest(parameters);
             }
 
+            /// <summary>
+            /// Удаляет все paste'ы пользователя
+            /// </summary>
+            /// <remarks>Требуется логин и пароль в <see cref="Parameters"/></remarks>
             public void DeleteAllPastes()
             {
                   GetUserPastes().Select(x => x.Key).ToList().ForEach(x => DeletePaste(x));

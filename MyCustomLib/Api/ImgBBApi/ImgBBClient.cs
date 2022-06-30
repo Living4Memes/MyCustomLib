@@ -8,17 +8,30 @@ using System.Threading.Tasks;
 
 namespace MyCustomLib.Api.ImgBBApi
 {
+      /// <summary>
+      /// Клиент для работы с сайтом imgbb.com
+      /// </summary>
       public class ImgBBClient
       {
             private const string POST_URI = "https://api.imgbb.com/1/upload";
 
             private string _apiKey;
 
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="ImgBBClient"/>
+            /// </summary>
+            /// <param name="apiKey">Api ключ imgbb.com</param>
             public ImgBBClient(string apiKey)
             {
                   _apiKey = apiKey;
             }
 
+            /// <summary>
+            /// Загружает изображение на imgbb.com
+            /// </summary>
+            /// <param name="bitmap"><see cref="Bitmap"/> для загрузки</param>
+            /// <param name="title">Название изображения</param>
+            /// <returns><see cref="ImgBBResponse"/> с информацией о загрузке</returns>
             public ImgBBResponse UploadImage(Bitmap bitmap, string title)
             {
                   NameValueCollection variables = new NameValueCollection();
@@ -30,21 +43,13 @@ namespace MyCustomLib.Api.ImgBBApi
                   return SendPostRequest(variables).ParseImgBBResponse();
             }
 
+            /// <summary>
+            /// Загружает изображение на imgbb.com
+            /// </summary>
+            /// <param name="image"><see cref="Image"/> для загрузки</param>
+            /// <param name="title">Название изображения</param>
+            /// <returns><see cref="ImgBBResponse"/> с информацией о загрузке</returns>
             public ImgBBResponse UploadImage(Image image, string title) => UploadImage(image.ToBitmap(), title);
-
-            public ImgBBResponse UploadImageAsync(Bitmap bitmap, string title)
-            {
-                  Task<ImgBBResponse> sender = Task.Factory.StartNew(() => UploadImage(bitmap, title));
-                  sender.Start();
-                  return sender.Result;
-            }
-
-            public ImgBBResponse UploadImageAsync(Image image, string title)
-            {
-                  Task<ImgBBResponse> sender = Task.Factory.StartNew(() => UploadImage(image, title));
-                  sender.Start();
-                  return sender.Result;
-            }
 
             private string SendPostRequest(NameValueCollection parameters)
             {
