@@ -6,13 +6,26 @@ using System.Windows.Forms;
 
 namespace MyCustomLib.GraphicFunctions
 {
+      /// <summary>
+      /// Статический класс реализации основных графических функций
+      /// </summary>
       public static class CustomGraphics
       {
+            /// <summary>
+            /// Строит <see cref="GraphicsPath"/> стиля "Pill"
+            /// </summary>
+            /// <param name="rect">Исходный <see cref="Rectangle"/></param>
+            /// <returns><see cref="GraphicsPath"/></returns>
             public static GraphicsPath GetPillRectanglePath(Rectangle rect)
             {
                   return GetRoundedRectanglePath(rect, rect.Height * 0.5);
             }
 
+            /// <summary>
+            /// Строит <see cref="GraphicsPath"/> закругленного <see cref="Rectangle"/>
+            /// </summary>
+            /// <param name="rect">Исходный <see cref="Rectangle"/></param>
+            /// <returns><see cref="GraphicsPath"/></returns>
             public static GraphicsPath GetRoundedRectanglePath(Rectangle rect, double radius = 20)
             {
                   int xradius = Convert.ToInt32(radius);
