@@ -73,6 +73,11 @@ namespace MyCustomLib.GraphicFunctions
                   return body;
             }
 
+            /// <summary>
+            /// Строит <see cref="GraphicsPath"/> входного <see cref="Rectangle"/>
+            /// </summary>
+            /// <param name="rect">Прямоугольник, на котором основывается построение</param>
+            /// <returns><see cref="GraphicsPath"/> входного <see cref="Rectangle"/></returns>
             public static GraphicsPath GetRectanglePath(Rectangle rect)
             {
                   GraphicsPath body = new GraphicsPath();
@@ -86,37 +91,77 @@ namespace MyCustomLib.GraphicFunctions
                   return body;
             }
 
+            /// <summary>
+            /// Построение <see cref="GraphicsPath"/> контейнера
+            /// </summary>
+            /// <param name="squareContainer">Прямоугольный контейнер</param>
+            /// <returns><see cref="GraphicsPath"/> контейнера</returns>
             public static GraphicsPath GetContainerGraphicsPath(ISquareContainer squareContainer)
             {
                   return GetRectanglePath(squareContainer.ClientRectangle);
             }
 
+            /// <summary>
+            /// Построение <see cref="GraphicsPath"/> контейнера
+            /// </summary>
+            /// <param name="roundedContainer">Контейнер с закругленными краями</param>
+            /// <returns><see cref="GraphicsPath"/> контейнера</returns>
             public static GraphicsPath GetContainerGraphicsPath(IRoundedContainer roundedContainer)
             {
                   return GetRoundedRectanglePath(roundedContainer.ClientRectangle, roundedContainer.RoundedRadius);
             }
 
+            /// <summary>
+            /// Построение <see cref="GraphicsPath"/> контейнера
+            /// </summary>
+            /// <param name="pillContainer">Контейнер типа "Pill"</param>
+            /// <returns><see cref="GraphicsPath"/> контейнера</returns>
             public static GraphicsPath GetContainerGraphicsPath(IPillContainer pillContainer)
             {
                   return GetPillRectanglePath(pillContainer.ClientRectangle);
             }
 
+            /// <summary>
+            /// Рисует рамку, используя входную <see cref="Graphics"/>
+            /// </summary>
+            /// <param name="g">Графика, где будет происходить рисование</param>
+            /// <param name="path"><see cref="GraphicsPath"/> самой рамки</param>
+            /// <param name="borderProperties">Настройки рамки</param>
             public static void DrawBorder (Graphics g, GraphicsPath path, BorderProperties borderProperties)
             {
                   g.DrawPath(new Pen(borderProperties.BorderColor, borderProperties.BorderWidth), path);
             }
 
-            public static void DrawBorder(Image image, GraphicsPath path, BorderProperties borderProperties) => DrawBorder(Graphics.FromImage(image), path, borderProperties);
+            /// <summary>
+            /// Рисует рамку на входном изображении
+            /// </summary>
+            /// <param name="image">Ссылка на изображение, на котором будет нарисована рамка</param>
+            /// <param name="path"><see cref="GraphicsPath"/> самой рамки</param>
+            /// <param name="borderProperties">Настройки рамки</param>
+            public static void DrawBorder(ref Image image, GraphicsPath path, BorderProperties borderProperties) => DrawBorder(Graphics.FromImage(image), path, borderProperties);
 
+            /// <summary>
+            /// Добавляет рамку к входному изображению
+            /// </summary>
+            /// <param name="image">Исходное изображение</param>
+            /// <param name="path"><see cref="GraphicsPath"/> самой рамки</param>
+            /// <param name="borderProperties">Настройки рамки</param>
+            /// <returns>Изображение с рамкой</returns>
             public static Image AddBorder(Image image, GraphicsPath path, BorderProperties borderProperties)
             {
                   Image result = new Bitmap(image);
 
-                  DrawBorder(result, path, borderProperties);
+                  DrawBorder(ref result, path, borderProperties);
 
                   return result;
             }
 
+            /// <summary>
+            /// Рисует тень, используя входную <see cref="Graphics"/>
+            /// </summary>
+            /// <param name="g">Графика, где будет происходить рисование</param>
+            /// <param name="rect">Прямоугольник, внутри которого будет нарисована тень</param>
+            /// <param name="shadowProperties">Настройки тени</param>
             public static void DrawShadow(Graphics g, Rectangle rect, ShadowProperties shadowProperties)
             {
                   Size size_vertical = new Size((int)(rect.Width * shadowProperties.Range - shadowProperties.Range * 80), rect.Height); // Не знаю, почему 80
@@ -155,29 +200,60 @@ namespace MyCustomLib.GraphicFunctions
 
             }
 
-            public static void DrawShadow(Image image, ShadowProperties shadowProperties) => DrawShadow(Graphics.FromImage(image), image.GetRectangle(), shadowProperties);
+            /// <summary>
+            /// Рисует тень на входном изображении
+            /// </summary>
+            /// <param name="image">Ссылка на изображение, на котором будет нарисована тень</param>
+            /// <param name="shadowProperties">Настройки тени</param>
+            public static void DrawShadow(ref Image image, ShadowProperties shadowProperties) => DrawShadow(Graphics.FromImage(image), image.GetRectangle(), shadowProperties);
 
+            /// <summary>
+            /// Рисует тень на входном изображении
+            /// </summary>
+            /// <param name="image">Исходное изображение</param>
+            /// <param name="shadowProperties">Настройки тени</param>
+            /// <returns>Изображение с тенью</returns>
             public static Image AddShadow(Image image, ShadowProperties shadowProperties)
             {
                   Image result = new Bitmap(image);
 
-                  DrawShadow(result, shadowProperties);
+                  DrawShadow(ref result, shadowProperties);
 
                   return result;
             }
 
+            /// <summary>
+            /// Рисует затемнение, используя входную <see cref="Graphics"/>
+            /// </summary>
+            /// <param name="g">Графика, где будет происходить рисование</param>
+            /// <param name="rect">Прямоугольник, внутри которого будет нарисовано затемнение</param>
+            /// <param name="color">Цвет затемнения</param>
+            /// <param name="alpha">Альфа-канал затемнения</param>
             public static void DrawBlackout(Graphics g, Rectangle rect, Color color, int alpha = 200)
             {
                   g.FillRectangle(new SolidBrush(Color.FromArgb(alpha, color)), rect);
             }
 
-            public static void DrawBlackout(Image image, Color color, int alpha = 200) => DrawBlackout(Graphics.FromImage(image), image.GetRectangle(), color, alpha);
+            /// <summary>
+            /// Рисует затемнение на входном изображении
+            /// </summary>
+            /// <param name="image">Ссылка на изображение, на котором будет нарисовано затемнение</param>
+            /// <param name="color">Цвет затемнения</param>
+            /// <param name="alpha">Альфа-канал затемнения</param>
+            public static void DrawBlackout(ref Image image, Color color, int alpha = 200) => DrawBlackout(Graphics.FromImage(image), image.GetRectangle(), color, alpha);
 
+            /// <summary>
+            /// Рисует затемнение на входном изображении
+            /// </summary>
+            /// <param name="image">Исходное изображение</param>
+            /// <param name="color">Цвет затемнения</param>
+            /// <param name="alpha">Альфа-канал затемнения</param>
+            /// <returns>Изображение с затемнением</returns>
             public static Image AddBlackout(Image image, Color color, int alpha = 200)
             {
                   Image result = new Bitmap(image);
 
-                  DrawBlackout(image, color, alpha);
+                  DrawBlackout(ref image, color, alpha);
 
                   return result;
             }
