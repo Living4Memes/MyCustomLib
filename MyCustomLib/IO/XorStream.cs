@@ -7,12 +7,20 @@ using System.Threading.Tasks;
 
 namespace MyCustomLib.IO
 {
+      /// <summary>
+      /// Класс, реализующий <see cref="Stream"/> с использованием XOR-функции
+      /// </summary>
       public class XorStream : Stream
       {
             //Класс полностью сделан хорошим человеком с CyberForum - SSTREGG https://www.cyberforum.ru/members/105416.html
             private readonly Stream _parent;
             private readonly byte _xor;
 
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="XorStream"/>
+            /// </summary>
+            /// <param name="stream">Исходный <see cref="Stream"/>, на основе которого будет происходить запись или чтение</param>
+            /// <param name="xorValue">Значение в <see cref="byte"/>, которое будет использоваться при XOR операции</param>
             public XorStream(Stream stream, byte xorValue)
             {
                   _parent = stream;
