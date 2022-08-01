@@ -11,15 +11,18 @@ namespace MyCustomLib.IO
 {
       public class CookieManager
       {
-            private static string _defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Living4Memes";
+            private static string _defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
+                  + "\\Living4Memes\\Unmanaged";
             private XmlDocument _document = new XmlDocument();
 
             public string FolderPath { get; set; } = _defaultFolderPath;
             public string DocumentName { get; set; } = "Cookies.xml";
             public List<Cookie> Cookies { get; private set; }
 
-            public CookieManager()
+            public CookieManager(string folderPath = "CookieManager\\Cookies")
             {
+                  FolderPath = folderPath;
+
                   TestFile();
                   Load();
             }
@@ -42,21 +45,27 @@ namespace MyCustomLib.IO
                   Cookies = ParseCookiesXml();
             }
 
-            public void AddCookie(Cookie cookie)
+            public void AddCookies(params Cookie[] cookies)
             {
-                  if (!Cookies.Contains(cookie))
-                        Cookies.Add(cookie);
-                  else
-                        return;
+                  foreach (Cookie cookie in cookies)
+                  {
+                        if (!Cookies.Contains(cookie))
+                        {
+                              Cookies.Add(cookie);
 
-                  AppendCookieXML(GetCookieXml(cookie));
+                              AppendCookieXML(GetCookieXml(cookie));
+                        }
+                  }
             }
 
-            public void RemoveCookie(Cookie cookie)
+            public void RemoveCookies(params Cookie[] cookies)
             {
-                  Cookies.Remove(cookie);
+                  foreach (Cookie cookie in cookies)
+                  {
+                        Cookies.Remove(cookie);
 
-                  DeleteCookieNode(cookie.Name);
+                        DeleteCookieNode(cookie.Name);
+                  }
             }
 
             private List<Cookie> ParseCookiesXml()
@@ -81,7 +90,8 @@ namespace MyCustomLib.IO
                               Domain = cookieNode.Attributes["c_domain"].Value,
                               Path = cookieNode.Attributes["c_path"].Value,
                               Expires = Convert.ToDateTime(cookieNode.Attributes["c_expires"].Value),
-                              Secure = Convert.ToBoolean(cookieNode.Attributes["c_secure"].Value)
+                              Secure = Convert.ToBoolean(cookieNode.Attributes["c_secure"].Value),
+                              Comment = cookieNode.Attributes["c_comment"].Value
                         };
                   }
                   catch
@@ -100,6 +110,7 @@ namespace MyCustomLib.IO
                   XmlAttribute path = _document.CreateAttribute("c_path");
                   XmlAttribute expires = _document.CreateAttribute("c_expires");
                   XmlAttribute secure = _document.CreateAttribute("c_secure");
+                  XmlAttribute comment = _document.CreateAttribute("c_comment");
 
                   name.Value = cookie.Name;
                   value.Value = cookie.Value;
@@ -107,6 +118,7 @@ namespace MyCustomLib.IO
                   path.Value = cookie.Path;
                   expires.Value = cookie.Expires.ToString();
                   secure.Value = cookie.Secure.ToString();
+                  comment.Value = cookie.Comment;
 
                   cookieXml.Attributes.Append(name);
                   cookieXml.Attributes.Append(value);
@@ -114,6 +126,7 @@ namespace MyCustomLib.IO
                   cookieXml.Attributes.Append(path);
                   cookieXml.Attributes.Append(expires);
                   cookieXml.Attributes.Append(secure);
+                  cookieXml.Attributes.Append(comment);
 
                   return cookieXml;
             }
@@ -136,6 +149,9 @@ namespace MyCustomLib.IO
 
             private void TestFile()
             {
+                  if(!Directory.Exists(FolderPath))
+                        Directory.CreateDirectory(FolderPath);
+
                   if (File.Exists(FolderPath + DocumentName))
                         return;
                   else

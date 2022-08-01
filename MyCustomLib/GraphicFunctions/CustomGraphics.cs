@@ -240,7 +240,7 @@ namespace MyCustomLib.GraphicFunctions
             /// <param name="image">Ссылка на изображение, на котором будет нарисовано затемнение</param>
             /// <param name="color">Цвет затемнения</param>
             /// <param name="alpha">Альфа-канал затемнения</param>
-            public static void DrawBlackout(ref Image image, Color color, int alpha = 200) => DrawBlackout(Graphics.FromImage(image), image.GetRectangle(), color, alpha);
+            public static void DrawBlackout(Image image, Color color, int alpha = 200) => DrawBlackout(Graphics.FromImage(image), image.GetRectangle(), color, alpha);
 
             /// <summary>
             /// Рисует затемнение на входном изображении
@@ -253,7 +253,7 @@ namespace MyCustomLib.GraphicFunctions
             {
                   Image result = new Bitmap(image);
 
-                  DrawBlackout(ref image, color, alpha);
+                  DrawBlackout(image, color, alpha);
 
                   return result;
             }

@@ -8,22 +8,21 @@ using OpenQA.Selenium;
 namespace MyCustomLib.Api.Selenium
 {
 
-      public abstract class ManagedBrowser
+      public class ManagedBrowser : WebDriver
       {
-            public event EmptyEventHandler Started;
-
-            protected WebDriver _browser;
             protected DriverService _driverService;
             protected DriverOptions _driverOptions;
 
-            public ManagedBrowser()
-            {
-                  //Options = new List<string>();
-            }
+            public INavigation Navigation { get => Navigate(); }
+            public IOptions Options { get => Manage(); }
 
-            public INavigation Navigate()
+            public ManagedBrowser(ICommandExecutor ice, ICapabilities icap) : base(ice, icap) { }
+
+            public ManagedBrowser(WebDriver driver) : base(driver.CommandExecutor, driver.Capabilities) { }
+
+            ~ManagedBrowser()
             {
-                  return _browser.Navigate();
+                  Dispose();
             }
 
             protected virtual void InitializeBrowser()
