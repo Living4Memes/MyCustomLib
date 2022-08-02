@@ -24,24 +24,35 @@ namespace Debug
 
                   Load += (s, e) =>
                   {
+                        browser.Navigation.GoToUrl("https://www.riotgames.com/ru");
+
                         manager.Load();
 
                         List<OpenQA.Selenium.Cookie> cookies = manager.Cookies.Select(x => x.ToSeleniumCookie()).ToList();
 
-                        foreach(OpenQA.Selenium.Cookie cookie in cookies.Where(x => x.Domain.StartsWith("www")))
+                        foreach(OpenQA.Selenium.Cookie cookie in cookies)
                               browser.Options.Cookies.AddCookie(cookie);
 
                         manager.Cookies.ForEach(x => browser.Options.Cookies.AddCookie(x.ToSeleniumCookie()));
 
-                        browser.Navigation.GoToUrl("https://www.riotgames.com/ru");
-
-                        browser.FindElement(By.Id("login")).Click();
+                        browser.Navigation.Refresh();
+                        try
+                        {
+                              browser.FindElement(By.ClassName("_2I66LI-wCuX47s2um7O7kh")).Click();
+                        }
+                        catch
+                        {
+                              MessageBox.Show(" NO LOGIN BUTTON!");
+                        }
 
                         browser.FindElement(By.Name("username")).SendKeys("BakaBoyyyy");
-                        browser.FindElement(By.Name("password")).SendKeys("ddddddddfgg1");
-                        browser.FindElement(By.CssSelector("body > div:nth-child(3) > div > div > div.grid.grid-direction__row.grid-page-web__content > div > div > div.grid.grid-align-center.grid-justify-space-between.grid-fill.grid-direction__column.grid-panel-web__content.grid-panel__content > div > div > div > div:nth-child(4) > div.mobile-checkbox.signin-checkbox > label > input[type=checkbox]")).Click();
+                        browser.FindElement(By.Name("password")).SendKeys("dddddddfgg1");
+                        browser.FindElement(By.ClassName(("signin-checkbox"))).Click();
                         browser.FindElement(By.ClassName("mobile-button")).Click();
 
+                        System.Threading.Tasks.Task.Delay(5000).Wait();
+
+                        Close();
                   };
 
                   FormClosing += (s, e) =>
@@ -60,6 +71,5 @@ namespace Debug
                         browser.Dispose();
                   };
             }
-
       }
 }

@@ -30,7 +30,15 @@ namespace MyCustomLib.Api.Selenium
 
             public static OpenQA.Selenium.Cookie ToSeleniumCookie(this System.Net.Cookie cookie)
             {
-                  return new OpenQA.Selenium.Cookie(cookie.Name, cookie.Value, cookie.Domain, cookie.Path, cookie.Expires, cookie.Secure, cookie.HttpOnly, cookie.Comment);
+                  return new OpenQA.Selenium.Cookie(cookie.Name, 
+                        cookie.Value, 
+                        cookie.Domain, 
+                        cookie.Path, 
+                        cookie.Expires,
+                        cookie.Secure,
+                        cookie.HttpOnly,
+                        cookie.Comment
+                        );
             }
       }
 }
