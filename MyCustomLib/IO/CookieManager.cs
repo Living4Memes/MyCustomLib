@@ -1,18 +1,19 @@
-﻿using System;
+﻿using MyCustomLib.Web;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace MyCustomLib.IO
 {
-      internal static class XmlNodeNames
+      internal static class XmlNames
       {
+            internal static string Managed = "managed";
             internal static string Root = "root";
-            internal static string CookieList = "c_collection";
+            internal static string CookieCollection = "c_collection";
+            internal static string Host = "host";
             internal static string CookieInfo = "c_data";
             internal static string Name = "c_name";
             internal static string Value = "c_value";
@@ -27,14 +28,15 @@ namespace MyCustomLib.IO
       {
             protected static string _defaultFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
                   + "\\Living4Memes\\Unmanaged";
-            protected XmlDocument _document = new XmlDocument();
+            protected XmlDocument _document;
 
             public string FolderPath { get; set; } = _defaultFolderPath;
             public string DocumentName { get; set; } = "Cookies.xml";
-            public virtual List<Cookie> Cookies { get; private set; }
+            public virtual ManagedCookieCollection Cookies { get; private set; }
 
             public CookieManager(string folderPath = "CookieManager\\Cookies")
             {
+                  _document = new XmlDocument();
                   FolderPath = folderPath;
 
                   TestFile();
@@ -59,42 +61,73 @@ namespace MyCustomLib.IO
                   Cookies = ParseCookiesXml();
             }
 
-            public void AddCookies(params Cookie[] cookies)
+            public void AddCookies(string host, params Cookie[] cookies)
             {
+                  if (host.LastIndexOf('/') != -1)
+                        throw new ArgumentException("Wrong host!");
+
                   Load();
 
-                  foreach (Cookie cookie in cookies)
-                  {
-                        if (Cookies.SingleOrDefault(x => x.Name == cookie.Name) == null)
-                        {
-                              Cookies.Add(cookie);
+                  CookieCollection collection = new CookieCollection();
 
-                              AppendCookieXML(GetCookieXml(cookie));
+                  cookies.ToList().ForEach(x => collection.Add(x));
+
+                  if (Cookies.Hosts.Contains(host))
+                  {
+                        foreach (Cookie cookie in cookies)
+                        {
+                              Cookies[host].Add(cookie);
+
+                              AppendCookieXML(host, GetCookieXml(cookie));
                         }
+                  }
+                  else
+                  {
+                        Cookies.Add(host, collection);
+                        AppendCookieCollectionXml(host, cookies);
                   }
 
                   Save();
             }
 
-            public void RemoveCookies(params Cookie[] cookies)
+            public void RemoveCookies(string host, params Cookie[] cookies)
             {
                   Load();
 
-                  foreach(Cookie cookie in cookies)
-                        Cookies.Remove(cookie);
+                  if (!Cookies.Hosts.Contains(host))
+                        throw new KeyNotFoundException("No such host!");
+
+                  foreach (Cookie cookie in cookies)
+                        DeleteCookieNode(cookie.Name);
 
                   Save();
             }
 
-            private List<Cookie> ParseCookiesXml()
+            private ManagedCookieCollection ParseCookiesXml()
             {
-                  List<Cookie> cookies = new List<Cookie>();
-                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNodeNames.CookieList).Item(0);
+                  ManagedCookieCollection collection = new ManagedCookieCollection();
 
-                  foreach (XmlNode node in cookiesNode)
-                        cookies.Add(ParseCookieNode(node));
+                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNames.CookieCollection).Item(0);
 
-                  return cookies;
+                  foreach (XmlNode hostNode in cookiesNode.ChildNodes)
+                  {
+                        (string, CookieCollection) result = ParseCookieCollectionNode(hostNode);
+
+                        collection.Add(result.Item1, result.Item2);
+                  }
+
+                  return collection;
+            }
+
+            private (string, CookieCollection) ParseCookieCollectionNode(XmlNode cookieCollectionNode)
+            {
+                  string host = cookieCollectionNode.Attributes[XmlNames.Host].Value;
+                  CookieCollection collection = new CookieCollection();
+
+                  foreach (XmlNode cookieNode in cookieCollectionNode)
+                        collection.Add(ParseCookieNode(cookieNode));
+
+                  return (host, collection);
             }
 
             private Cookie ParseCookieNode(XmlNode cookieNode)
@@ -103,13 +136,13 @@ namespace MyCustomLib.IO
                   {
                         return new Cookie()
                         {
-                              Name = cookieNode.Attributes[XmlNodeNames.Name].Value,
-                              Value = cookieNode.Attributes[XmlNodeNames.Value].Value,
-                              Domain = cookieNode.Attributes[XmlNodeNames.Domain].Value,
-                              Path = cookieNode.Attributes[XmlNodeNames.Path].Value,
-                              Expires = Convert.ToDateTime(cookieNode.Attributes[XmlNodeNames.Expires].Value),
-                              Secure = Convert.ToBoolean(cookieNode.Attributes[XmlNodeNames.Secure].Value),
-                              Comment = cookieNode.Attributes[XmlNodeNames.Comment].Value
+                              Name = cookieNode.Attributes[XmlNames.Name].Value,
+                              Value = cookieNode.Attributes[XmlNames.Value].Value,
+                              Domain = cookieNode.Attributes[XmlNames.Domain].Value,
+                              Path = cookieNode.Attributes[XmlNames.Path].Value,
+                              Expires = Convert.ToDateTime(cookieNode.Attributes[XmlNames.Expires].Value),
+                              Secure = Convert.ToBoolean(cookieNode.Attributes[XmlNames.Secure].Value),
+                              Comment = cookieNode.Attributes[XmlNames.Comment].Value
                         };
                   }
                   catch
@@ -120,15 +153,15 @@ namespace MyCustomLib.IO
 
             private XmlElement GetCookieXml(Cookie cookie)
             {
-                  XmlElement cookieXml = _document.CreateElement(XmlNodeNames.CookieInfo);
+                  XmlElement cookieXml = _document.CreateElement(XmlNames.CookieInfo);
 
-                  XmlAttribute name = _document.CreateAttribute(XmlNodeNames.Name);
-                  XmlAttribute value = _document.CreateAttribute(XmlNodeNames.Value);
-                  XmlAttribute domain = _document.CreateAttribute(XmlNodeNames.Domain);
-                  XmlAttribute path = _document.CreateAttribute(XmlNodeNames.Path);
-                  XmlAttribute expires = _document.CreateAttribute(XmlNodeNames.Expires);
-                  XmlAttribute secure = _document.CreateAttribute(XmlNodeNames.Secure);
-                  XmlAttribute comment = _document.CreateAttribute(XmlNodeNames.Comment);
+                  XmlAttribute name = _document.CreateAttribute(XmlNames.Name);
+                  XmlAttribute value = _document.CreateAttribute(XmlNames.Value);
+                  XmlAttribute domain = _document.CreateAttribute(XmlNames.Domain);
+                  XmlAttribute path = _document.CreateAttribute(XmlNames.Path);
+                  XmlAttribute expires = _document.CreateAttribute(XmlNames.Expires);
+                  XmlAttribute secure = _document.CreateAttribute(XmlNames.Secure);
+                  XmlAttribute comment = _document.CreateAttribute(XmlNames.Comment);
 
                   name.Value = cookie.Name;
                   value.Value = cookie.Value;
@@ -149,16 +182,46 @@ namespace MyCustomLib.IO
                   return cookieXml;
             }
 
-            private void AppendCookieXML(XmlNode cookieNode)
+            private XmlElement GetCookieCollectionXml(string host, CookieCollection cookies)
             {
-                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNodeNames.CookieList).Item(0);
+                  XmlElement collection = _document.CreateElement(XmlNames.CookieCollection);
+                  XmlAttribute hostXml = _document.CreateAttribute(XmlNames.Host);
 
-                  cookiesNode.AppendChild(cookieNode);
+                  hostXml.Value = host;
+
+                  collection.AppendChild(hostXml);
+
+                  foreach (Cookie cookie in cookies)
+                        collection.AppendChild(GetCookieXml(cookie));
+
+                  return collection;
+            }
+
+            private void AppendCookieXML(string host, XmlNode cookieNode)
+            {
+                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNames.CookieCollection).Item(0);
+
+                  XmlNode parent = cookiesNode.ChildNodes.ToList().SingleOrDefault(x => x.Attributes[XmlNames.Host].Value == host);
+
+                  parent.AppendChild(cookieNode);
+            }
+
+            private void AppendCookieCollectionXml(string host, Cookie[] cookies)
+            {
+                  XmlElement collection = _document.CreateElement(XmlNames.Managed);
+                  XmlAttribute hostXml = _document.CreateAttribute(XmlNames.Host);
+                  hostXml.Value = host;
+                  collection.Attributes.Append(hostXml);
+
+                  foreach (Cookie cookie in cookies)
+                        collection.AppendChild(GetCookieXml(cookie));
+
+                  _document.GetElementsByTagName(XmlNames.CookieCollection).Item(0).AppendChild(collection);
             }
 
             private void DeleteCookieNode(string cookieName)
             {
-                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNodeNames.CookieList).Item(0);
+                  XmlNode cookiesNode = _document.DocumentElement.GetElementsByTagName(XmlNames.CookieCollection).Item(0);
 
                   foreach (XmlNode node in cookiesNode.ChildNodes)
                         if (node.Attributes["c_name"].Value == cookieName)
@@ -176,8 +239,8 @@ namespace MyCustomLib.IO
                   {
                         File.Create(FolderPath + DocumentName).Close();
 
-                        XmlElement root = _document.CreateElement(XmlNodeNames.Root);
-                        XmlElement cookies = _document.CreateElement(XmlNodeNames.CookieList);
+                        XmlElement root = _document.CreateElement(XmlNames.Root);
+                        XmlElement cookies = _document.CreateElement(XmlNames.CookieCollection);
 
                         root.AppendChild(cookies);
                         _document.AppendChild(root);

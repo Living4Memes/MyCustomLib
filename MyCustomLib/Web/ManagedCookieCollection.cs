@@ -19,6 +19,19 @@ namespace MyCustomLib.Web
 
             public string[] Hosts => _allCookies.Keys.ToArray();
 
+            public ManagedCookieCollection()
+            {
+                  _allCookies = new Dictionary<string, CookieCollection>();
+            }
+
+            public void Add(string host, CookieCollection collection)
+            {
+                  if (!Hosts.Contains(host))
+                        _allCookies.Add(host, collection);
+                  else foreach(Cookie cookie in collection)
+                              _allCookies[host].Add(cookie);
+            }
+
             public IEnumerator GetEnumerator() => _allCookies.GetEnumerator();
       }
 }

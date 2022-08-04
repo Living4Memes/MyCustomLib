@@ -133,7 +133,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Web\BrowserCookieCollection.cs" />
+    <Compile Include="Web\ManagedCookieCollection.cs" />
     <Compile Include="Web\~Web_General.cs" />
     <Compile Include="~MyCustomLib_General.cs" />
   </ItemGroup>

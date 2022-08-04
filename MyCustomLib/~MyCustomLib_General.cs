@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 using MyCustomLib.GraphicFunctions;
 using Svg;
 using System.ComponentModel;
-
+using System.Xml;
 
 namespace MyCustomLib
 {
@@ -106,6 +106,16 @@ namespace MyCustomLib
                         throw new ArgumentNullException("Input image was null value", nameof(image));
 
                   return new Bitmap(image);
+            }
+
+            public static List<XmlNode> ToList(this XmlNodeList list)
+            {
+                  List<XmlNode> result = new List<XmlNode>();
+
+                  foreach (XmlNode node in list)
+                        result.Add(node);
+
+                  return result;
             }
             #endregion
 
