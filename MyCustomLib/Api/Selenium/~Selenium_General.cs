@@ -16,25 +16,39 @@ namespace MyCustomLib.Api.Selenium
       {
             public static System.Net.Cookie ToNetCookie(this OpenQA.Selenium.Cookie cookie)
             {
+                  DateTime dt;
+
+                  if (cookie.Expiry == null)
+                        dt = DateTime.MinValue;
+                  else
+                        dt = (DateTime)cookie.Expiry;
+
                   return new System.Net.Cookie()
                   {
                         Name = cookie.Name,
                         Value = cookie.Value,
                         Domain = cookie.Domain,
                         Path = cookie.Path,
-                        Expires = (DateTime)cookie.Expiry,
-                        Secure = cookie.Secure,
-                        Comment = cookie.SameSite
+                        Expires = dt,
+                        Secure = (bool)cookie.Secure,
+                        Comment = (string)cookie.SameSite
                   };
             }
 
             public static OpenQA.Selenium.Cookie ToSeleniumCookie(this System.Net.Cookie cookie)
             {
+                  DateTime? dt;
+
+                  if (cookie.Expires.ToString() == DateTime.MinValue.ToString())
+                        dt = null;
+                  else
+                        dt = cookie.Expires;
+
                   return new OpenQA.Selenium.Cookie(cookie.Name, 
                         cookie.Value, 
                         cookie.Domain, 
                         cookie.Path, 
-                        cookie.Expires,
+                        dt,
                         cookie.Secure,
                         cookie.HttpOnly,
                         cookie.Comment

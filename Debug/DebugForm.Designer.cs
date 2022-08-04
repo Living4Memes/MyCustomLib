@@ -30,6 +30,7 @@
             {
                   this.listBox1 = new System.Windows.Forms.ListBox();
                   this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+                  this.customButton1 = new MyCustomLib.Controls.CustomButton();
                   this.SuspendLayout();
                   // 
                   // listBox1
@@ -49,11 +50,29 @@
                   this.richTextBox1.TabIndex = 2;
                   this.richTextBox1.Text = "";
                   // 
+                  // customButton1
+                  // 
+                  this.customButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(61)))), ((int)(((byte)(70)))));
+                  this.customButton1.BorderColor = System.Drawing.Color.Orange;
+                  this.customButton1.BorderWidth = 5F;
+                  this.customButton1.DrawBorder = true;
+                  this.customButton1.Hoverable = false;
+                  this.customButton1.Location = new System.Drawing.Point(453, 308);
+                  this.customButton1.MouseEnterColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(137)))), ((int)(((byte)(45)))));
+                  this.customButton1.Name = "customButton1";
+                  this.customButton1.Radius = 20D;
+                  this.customButton1.Size = new System.Drawing.Size(200, 50);
+                  this.customButton1.Style = MyCustomLib.Controls.CustomContainerStyle.Rounded;
+                  this.customButton1.TabIndex = 3;
+                  this.customButton1.Text = "Do stuff";
+                  this.customButton1.Click += new System.EventHandler(this.customButton1_Click);
+                  // 
                   // DebugForm
                   // 
                   this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
                   this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                   this.ClientSize = new System.Drawing.Size(800, 450);
+                  this.Controls.Add(this.customButton1);
                   this.Controls.Add(this.richTextBox1);
                   this.Controls.Add(this.listBox1);
                   this.Name = "DebugForm";
@@ -61,6 +80,7 @@
                   this.Text = "Form1";
                   this.Controls.SetChildIndex(this.listBox1, 0);
                   this.Controls.SetChildIndex(this.richTextBox1, 0);
+                  this.Controls.SetChildIndex(this.customButton1, 0);
                   this.ResumeLayout(false);
 
             }
@@ -69,6 +89,7 @@
 
             private System.Windows.Forms.ListBox listBox1;
             private System.Windows.Forms.RichTextBox richTextBox1;
+            private MyCustomLib.Controls.CustomButton customButton1;
       }
 }
 

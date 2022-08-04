@@ -88,6 +88,7 @@
     <Compile Include="Api\PasteBinApi\PasteBinRequestBuilder.cs" />
     <Compile Include="Api\PasteBinApi\PastesListParser.cs" />
     <Compile Include="Api\PasteBinApi\~PasteBinApi_General.cs" />
+    <Compile Include="Api\Selenium\ExtendedWebDriver.cs" />
     <Compile Include="Api\Selenium\ManagedBrowser.cs" />
     <Compile Include="Api\Selenium\~Selenium_General.cs" />
     <Compile Include="Api\WinApi\GlobalKeyboardHook.cs" />

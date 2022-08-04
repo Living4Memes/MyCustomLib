@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
@@ -11,9 +12,10 @@ namespace MyCustomLib.Api.Selenium
 
       public class ManagedBrowser : IWebDriver, IDisposable
       {
-            protected WebDriver _driver;
-            protected DriverService _driverService;
-            protected DriverOptions _driverOptions;
+            public delegate void WebSiteHandler(string url, CookieCollection cookies);
+            public event WebSiteHandler UrlChanged;
+
+            private ExtendedWebDriver _driver;
 
             public IOptions Options { get => Manage(); }
             public INavigation Navigation { get => Navigate(); }
@@ -23,7 +25,7 @@ namespace MyCustomLib.Api.Selenium
             public string CurrentWindowHandle => _driver.CurrentWindowHandle;
             public ReadOnlyCollection<string> WindowHandles => _driver.WindowHandles;
 
-            public ManagedBrowser(WebDriver driver) { _driver = driver; Manage(); Navigate(); }
+            public ManagedBrowser(WebDriver driver) { _driver = (ExtendedWebDriver)driver; Initialize();  Manage(); Navigate(); }
 
             public void Close() => _driver.Close();
             public void Quit() => _driver.Quit();
@@ -36,6 +38,29 @@ namespace MyCustomLib.Api.Selenium
             {
                   _driver.Quit();
                   _driver.Dispose();
+            }
+
+            public void LoadCookies(List<OpenQA.Selenium.Cookie> cookies)
+            {
+                  cookies.Where(x => Url.Contains(x.Domain))
+                        .ToList()
+                        .ForEach(x => Options.Cookies.AddCookie(x));
+            }
+
+            private void Initialize()
+            {
+                  _driver.PropertyChanged += (s, e) =>
+                  {
+                        if(e.PropertyName == nameof(_driver.Url))
+                        {
+
+                        }
+                  };
+            }
+            
+            private CookieCollection GetCookiesForDomain(string url)
+            {
+                  return null;
             }
       }
 }
