@@ -4,18 +4,19 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.Events;
 
 namespace MyCustomLib.Api.Selenium
 {
 
       public class ManagedBrowser : IWebDriver, IDisposable
       {
-            public delegate void WebSiteHandler(string url, CookieCollection cookies);
-            public event WebSiteHandler UrlChanged;
-
-            private ExtendedWebDriver _driver;
+            private EventFiringWebDriver _driver;
+            private Dictionary<string, CookieCollection> _allCookies;
 
             public IOptions Options { get => Manage(); }
             public INavigation Navigation { get => Navigate(); }
@@ -25,7 +26,15 @@ namespace MyCustomLib.Api.Selenium
             public string CurrentWindowHandle => _driver.CurrentWindowHandle;
             public ReadOnlyCollection<string> WindowHandles => _driver.WindowHandles;
 
-            public ManagedBrowser(WebDriver driver) { _driver = (ExtendedWebDriver)driver; Initialize();  Manage(); Navigate(); }
+            public ManagedBrowser(IWebDriver driver)
+            {
+                  _driver = new EventFiringWebDriver(driver);
+                  _allCookies = new Dictionary<string, CookieCollection>();
+
+                  InitializeEvents();
+                  Manage();
+                  Navigate();
+            }
 
             public void Close() => _driver.Close();
             public void Quit() => _driver.Quit();
@@ -47,20 +56,24 @@ namespace MyCustomLib.Api.Selenium
                         .ForEach(x => Options.Cookies.AddCookie(x));
             }
 
-            private void Initialize()
+            private void InitializeEvents()
             {
-                  _driver.PropertyChanged += (s, e) =>
+                  _driver.Navigating += (s, e) =>
                   {
-                        if(e.PropertyName == nameof(_driver.Url))
+                        string host = new Uri(Url).Host;
+                        if(_allCookies.Keys.Contains(host))
                         {
+                              foreach (OpenQA.Selenium.Cookie cookie in Options.Cookies.AllCookies)
+                                    _allCookies[host].Add(cookie.ToNetCookie());
 
+                              Options.Cookies.DeleteAllCookies();
+
+                              foreach (System.Net.Cookie cookie in _allCookies[host])
+                                    Options.Cookies.AddCookie(cookie.ToSeleniumCookie());
                         }
+                        else
+                              _allCookies.Add(host, new CookieCollection());
                   };
-            }
-            
-            private CookieCollection GetCookiesForDomain(string url)
-            {
-                  return null;
             }
       }
 }

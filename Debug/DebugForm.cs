@@ -29,22 +29,22 @@ namespace Debug
             {
                   // L: abc123
                   // P: 123xyz
-                  //browser.Navigation.GoToUrl("https://demo.guru99.com/test/cookie/selenium_aut.php");
-                  browser.Navigation.GoToUrl("http://riotgames.com");
-                  //manager.Load();
+                  browser.Navigation.GoToUrl("https://demo.guru99.com/test/cookie/selenium_aut.php");
+                  //browser.Navigation.GoToUrl("http://riotgames.com");
+                  manager.Load();
                   browser.LoadCookies(manager.Cookies.Select(x => x.ToSeleniumCookie()).ToList());
-                  //browser.Navigation.Refresh();
+                  browser.Navigation.Refresh();
 
-                  //try
-                  //{
-                  //      browser.FindElement(By.Name("username")).SendKeys("abc123");
-                  //      browser.FindElement(By.Name("password")).SendKeys("123xyz");
-                  //      browser.FindElement(By.Name("submit")).Click();
-                  //}
-                  //catch
-                  //{
-                  //      MessageBox.Show("Cant login");
-                  //}
+                  try
+                  {
+                        browser.FindElement(By.Name("username")).SendKeys("abc123");
+                        browser.FindElement(By.Name("password")).SendKeys("123xyz");
+                        browser.FindElement(By.Name("submit")).Click();
+                  }
+                  catch
+                  {
+                        MessageBox.Show("Cant login");
+                  }
             }
 
             private void SaveCookies()
@@ -54,6 +54,7 @@ namespace Debug
 
             private void customButton1_Click(object sender, EventArgs e)
             {
+                  //richTextBox1.Text = ManagedBrowser.GetHost("https://demo.guru99.com/test/cookie/selenium_aut.php");
                   SaveCookies();
             }
       }

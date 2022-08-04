@@ -88,7 +88,6 @@
     <Compile Include="Api\PasteBinApi\PasteBinRequestBuilder.cs" />
     <Compile Include="Api\PasteBinApi\PastesListParser.cs" />
     <Compile Include="Api\PasteBinApi\~PasteBinApi_General.cs" />
-    <Compile Include="Api\Selenium\ExtendedWebDriver.cs" />
     <Compile Include="Api\Selenium\ManagedBrowser.cs" />
     <Compile Include="Api\Selenium\~Selenium_General.cs" />
     <Compile Include="Api\WinApi\GlobalKeyboardHook.cs" />
@@ -134,6 +133,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Web\BrowserCookieCollection.cs" />
+    <Compile Include="Web\~Web_General.cs" />
     <Compile Include="~MyCustomLib_General.cs" />
   </ItemGroup>
   <ItemGroup>
