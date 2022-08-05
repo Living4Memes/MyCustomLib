@@ -65,7 +65,6 @@
                   this.customButton1.Style = MyCustomLib.Controls.CustomContainerStyle.Rounded;
                   this.customButton1.TabIndex = 3;
                   this.customButton1.Text = "Do stuff";
-                  this.customButton1.Click += new System.EventHandler(this.customButton1_Click);
                   // 
                   // DebugForm
                   // 

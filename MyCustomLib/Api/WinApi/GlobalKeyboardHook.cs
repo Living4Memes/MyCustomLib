@@ -9,7 +9,7 @@ namespace MyCustomLib.Api.WinApi
       {
             // Код хука взят с https://www.cyberforum.ru/windows-forms/thread782982.html
 
-            #region Constant, Structure and Delegate Definitions
+            #region Structure and Delegate Definitions
             /// <summary>
             /// defines the callback type for the hook
             /// </summary>
@@ -23,12 +23,6 @@ namespace MyCustomLib.Api.WinApi
                   public int time;
                   public int dwExtraInfo;
             }
-
-            const int WH_KEYBOARD_LL = 13;
-            const int WM_KEYDOWN = 0x100;
-            const int WM_KEYUP = 0x101;
-            const int WM_SYSKEYDOWN = 0x104;
-            const int WM_SYSKEYUP = 0x105;
             #endregion
 
             #region Instance Variables
@@ -84,9 +78,9 @@ namespace MyCustomLib.Api.WinApi
             {
 
                   IntPtr hInstance = LoadLibrary("User32");
-                  //hhook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
+                  //hhook = SetWindowsHookEx(KEYBOARD_LL, hookProc, hInstance, 0);
                   delegateHookProc = HookProc;
-                  hhook = SetWindowsHookEx(WH_KEYBOARD_LL, delegateHookProc, hInstance, 0);
+                  hhook = SetWindowsHookEx((int)WH.KEYBOARD_LL, delegateHookProc, hInstance, 0);
             }
             public delegate int KeyboardHookProc(int code, int wParam, ref KeyboardHookStruct lParam);
             KeyboardHookProc delegateHookProc;
@@ -113,12 +107,12 @@ namespace MyCustomLib.Api.WinApi
                         if (KeyFilter.Contains(key) || !Filtered)
                         {
                               KeyEventArgs kea = new KeyEventArgs(key);
-                              if ((wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) && (KeyDown != null))
+                              if ((wParam == (int)WM.KEYDOWN || wParam == (int)WM.SYSKEYDOWN) && (KeyDown != null))
                               {
                                     KeyDown(this, kea);
                               }
                               else
-                              if ((wParam == WM_KEYUP || wParam == WM_SYSKEYUP) && (KeyUp != null))
+                              if ((wParam == (int)WM.KEYUP || wParam == (int)WM.SYSKEYUP) && (KeyUp != null))
                               {
                                     KeyUp(this, kea);
                               }
