@@ -92,7 +92,7 @@
     <Compile Include="Api\Selenium\~Selenium_General.cs" />
     <Compile Include="Api\WinApi\Enums.cs" />
     <Compile Include="Api\WinApi\GlobalKeyboardHook.cs" />
-    <Compile Include="Api\WinApi\Win32ApiProvider.cs" />
+    <Compile Include="Api\WinApi\WinApiProvider.cs" />
     <Compile Include="Api\WinApi\~WinApi_General.cs" />
     <Compile Include="Controls\CustomButton.cs">
       <SubType>Component</SubType>
