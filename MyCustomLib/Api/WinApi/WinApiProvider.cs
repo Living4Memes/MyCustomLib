@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace MyCustomLib.Api.WinApi
 {
-      public static class WinApiProbider
+      public static class WinApiProvider
       {
             [DllImport("user32.dll", SetLastError = true)]
             static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
