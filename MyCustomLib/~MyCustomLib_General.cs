@@ -52,7 +52,7 @@ namespace MyCustomLib
                   string input = str.Replace('.', ',');
                   double dbl = 0;
 
-                  if (double.TryParse(str, out dbl))
+                  if (double.TryParse(input, out dbl))
                         return dbl;
 
                   throw new ArgumentException("Input string was not correct double value!", nameof(str));

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace MyCustomLib.Api.WinApi
 {
+      // Всё взято с http://www.pinvoke.net/
+
       /// <summary>
       /// Windows Messages
       /// </summary>
